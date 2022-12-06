@@ -3,18 +3,19 @@ import {React,useState,lazy,Suspense} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import Login from './screens/login';
+import SignUp from './screens/signup';
 const Nav = lazy(()=>import('./nav'))
 export default function App() {
-  const[screen,setScreen] = useState('login')
+  const[screen,setScreen] = useState('signup')
 
   return (
     <>
     {screen === 'login' ? 
       <Login screen={screen} setScreen={setScreen} />
-    : screen === 'signup' ? <></> 
+    : screen === 'signup' ? <SignUp screen={screen} setScreen={setScreen}/> 
     : 
     <Suspense fallback={<Text>Loading...</Text>}>
-      <Nav/>
+      <Nav screen={screen} setScreen={setScreen}/>
     </Suspense>
     }
     </>

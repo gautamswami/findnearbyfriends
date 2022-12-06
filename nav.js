@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -21,8 +21,10 @@ function SettingsScreen() {
 
 const Tab = createBottomTabNavigator();
 
-export default function Nav() {
+export default function Nav(props) {
+let {setScreen} = props;
   return (
+    <>
     <NavigationContainer>
       <Tab.Navigator>
         <Tab.Screen name="Home" component={HomeScreen} />
@@ -32,5 +34,9 @@ export default function Nav() {
 
       </Tab.Navigator>
     </NavigationContainer>
+        <Pressable style={{height:30}} onPress={() => setScreen("login")} component={SettingsScreen} >
+          <Text style={{textAlign:'center'}}>LOGOUT</Text>
+        </Pressable>
+        </>
   );
 }
