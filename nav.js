@@ -1,42 +1,86 @@
-import * as React from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
+import { Pressable, Text } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-function SettingsScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Settings!</Text>
-    </View>
-  );
-}
-
+import { NavigationContainer } from "@react-navigation/native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Profile from "./screens/profile";
+import HomeComponent from "./screens/home";
+import Setting from "./screens/setting";
+import Nav from "./screens/tabNav";
+import MessageNav from "./screens/messagenav";
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-export default function Nav(props) {
-let {setScreen} = props;
+const TabNav = ({ navigation }) => {
   return (
     <>
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-        <Tab.Screen name="Messages" component={SettingsScreen} />
-        <Tab.Screen name="Anonymous" component={SettingsScreen} />
+      <NavigationContainer independent={true}>
+        <Tab.Navigator
+          tabBarOptions={{
+            showLabel: false,
+          }}
+          screenOptions={
+            ({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
+    
+                if (route.name === 'Nav') {
+                  iconName = focused
+                    ? 'home'
+                    : 'home';
+                return <AntDesign name={iconName} size={24} color="white" />
 
-      </Tab.Navigator>
-    </NavigationContainer>
-        <Pressable style={{height:30}} onPress={() => setScreen("login")} component={SettingsScreen} >
-          <Text style={{textAlign:'center'}}>LOGOUT</Text>
-        </Pressable>
-        </>
+                } else if (route.name === 'Message') {
+                  iconName = focused ? 'message1' : 'message1';
+                return <AntDesign name={iconName} size={24} color="white" />
+
+                }
+                else if(route.name === 'Anonymous'){
+                  iconName = focused ? 'setting' : 'setting'
+                return  <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="white" />
+
+                }
+    
+                // You can return any component that you like here!
+                // return <AntDesign name={iconName} size={24} color="white" />
+                // <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="black" />
+                ;
+              },
+              tabBarActiveTintColor: 'tomato',
+              tabBarInactiveTintColor: 'gray',
+              tabBarStyle: [
+                {
+                  backgroundColor: "black",
+                },
+              ],
+            })
+           }
+
+        >
+          <Tab.Screen
+            name="Nav"
+            component={Nav}
+            // component={MessageNav}
+
+            options={{ headerShown: false }}
+          />
+          <Tab.Screen
+            name="Message"
+            component={MessageNav}
+            options={{ headerShown: false, tabBarVisible:false  }}
+          />
+          <Tab.Screen
+            name="Anonymous"
+            component={Setting}
+            options={{ headerShown: false, tabBarVisible:false  }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </>
   );
-}
+};
+export default TabNav;

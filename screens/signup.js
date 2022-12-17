@@ -1,37 +1,40 @@
 import { View, Text, Pressable, TextInput } from "react-native";
-import styles, { HomeBoldText, HomeText,SignUpText,ErrorText } from "./css";
+import styles, { HomeBoldText, HomeText, SignUpText, ErrorText } from "./css";
 import { useState } from "react";
 export default function SignUp(props) {
   let { screen, setScreen } = props;
   const [email, setEmail] = useState();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
-  const [error,setError] = useState('')
+  const [error, setError] = useState("");
   const signup = async () => {
     const req = {
       username: username,
       email: email,
       password: password,
     };
-    const response = await fetch("http://localhost:3000/user/signup", {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req)
-    });
-    const data = await response.json();
-    if(data.message === 'sucess'){
-      setScreen('home')
-    }
-    if(data.message.code === 11000){
-      setError('Oops! username already taken!')
-      console.log("yes dtadt")
+    var response, data;
+    try {
+      response = await fetch("http://localhost:3000/user/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(req),
+      });
+      data = await response.json();
+      if (data.message === "sucess") {
+        setScreen("home");
+      }
+      if (data.message.code === 11000) {
+        setError("Oops! username already taken!");
+      }
+    } catch (e) {
+      setError("catch error");
     }
   };
   return (
     <>
       <View style={styles.blackview}>
         <View style={styles.marginauto}>
-   
           <HomeBoldText text={"Welcome!"} />
           <HomeText text={"Create your username and password"} />
           <TextInput
@@ -46,7 +49,7 @@ export default function SignUp(props) {
             onChangeText={(username) => setUsername(username)}
             name={"username"}
           />
-            <ErrorText text={error} />
+          <ErrorText text={error} />
           <TextInput
             style={styles.logininput}
             placeholder="password"

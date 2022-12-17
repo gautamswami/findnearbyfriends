@@ -6,7 +6,7 @@ import Login from './screens/login';
 import SignUp from './screens/signup';
 const Nav = lazy(()=>import('./nav'))
 export default function App() {
-  const[screen,setScreen] = useState('signup')
+  const[screen,setScreen] = useState('home')
 
   return (
     <>
