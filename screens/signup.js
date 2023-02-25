@@ -1,6 +1,8 @@
 import { View, Text, Pressable, TextInput } from "react-native";
 import styles, { HomeBoldText, HomeText, SignUpText, ErrorText } from "./css";
-import { useState } from "react";
+import { useState,useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function SignUp(props) {
   let { screen, setScreen } = props;
   const [email, setEmail] = useState();
@@ -15,7 +17,7 @@ export default function SignUp(props) {
     };
     var response, data;
     try {
-      response = await fetch("http://localhost:3000/user/signup", {
+      response = await fetch("https://fnfservice.onrender.com/user/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(req),
@@ -23,6 +25,11 @@ export default function SignUp(props) {
       data = await response.json();
       if (data.message === "sucess") {
         setScreen("home");
+        try {
+          await AsyncStorage.setItem("user",data.user.username);
+        } catch (error) {
+          console.log(error);
+        }
       }
       if (data.message.code === 11000) {
         setError("Oops! username already taken!");

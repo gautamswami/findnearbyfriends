@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { View, Text, Pressable, TextInput } from "react-native";
 import { json } from "react-router-native";
 import styles, { ErrorText, HomeBoldText, HomeText, SignUpText } from "./css";
@@ -8,28 +8,14 @@ export default function Login(props) {
   const [username, SetUsername] = useState();
   const [password, SetPassword] = useState();
   const [error, setError] = useState();
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("@storage_Key", "THIS IS A TEST HERE");
-    } catch (e) {
-      // saving error
-    }
-  };
+  
   const checkLogin = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('@storage_Key')
-    //   console.log(value)
-    //   if(value !== null) {
-    //     // value previously stored
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
+     
     const req = {
       username: username,
       password: password,
     };
-    let url = "http://localhost:3000/user/login";
+    let url = "https://fnfservice.onrender.com/user/login";
     var response;
     try {
       response = await fetch(url, {
@@ -40,11 +26,18 @@ export default function Login(props) {
       const data = await response.json();
       if (data.message.success) {
         setScreen("home");
+        try {
+          await AsyncStorage.setItem(
+            "user", req.username 
+          );
+        } catch (error) {
+          console.log(error)
+        }
       } else {
         setError("Invalid Credentials");
       }
     } catch (e) {
-      setError("catched error");
+      setError("OFFLINE");
       console.log(e);
     }
   };

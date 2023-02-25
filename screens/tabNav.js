@@ -7,6 +7,8 @@ import HomeScreen from "./home";
 import ProfileScreen from "./profile";
 import TabNav from "../nav";
 import ProfileUserScreen from "./profileuser";
+import Message from "./message/message";
+import MessageView from "./message/messageview";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +32,17 @@ export default function Nav() {
             options={{ headerShown: false }}
             component={ProfileUserScreen}
           />
+          <Stack.Screen
+            name="Message"
+            component={Message}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Messageview"
+            // options={{ headerShown: false }}
+            component={MessageView}
+          />
+        
         </Stack.Navigator>
       </NavigationContainer>
     </>
