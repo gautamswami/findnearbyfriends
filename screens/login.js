@@ -1,4 +1,4 @@
-import { useState ,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { View, Text, Pressable, TextInput } from "react-native";
 import { json } from "react-router-native";
 import styles, { ErrorText, HomeBoldText, HomeText, SignUpText } from "./css";
@@ -8,9 +8,8 @@ export default function Login(props) {
   const [username, SetUsername] = useState();
   const [password, SetPassword] = useState();
   const [error, setError] = useState();
-  
+
   const checkLogin = async () => {
-     
     const req = {
       username: username,
       password: password,
@@ -27,19 +26,28 @@ export default function Login(props) {
       if (data.message.success) {
         setScreen("home");
         try {
-          await AsyncStorage.setItem(
-            "user", req.username 
-          );
+          await AsyncStorage.setItem("user", req.username);
         } catch (error) {
-          console.log(error)
+          // console.log(error);
         }
       } else {
         setError("Invalid Credentials");
       }
     } catch (e) {
       setError("OFFLINE");
-      console.log(e);
+      // console.log(e);
     }
+  };
+  useEffect(() => {
+    checkUserLogin();
+  }, []);
+  const checkUserLogin = async () => {
+    let userstore = await AsyncStorage.getItem("user");
+    
+    if (userstore && userstore?.length !== 0) {
+      setScreen("home");
+    }
+    return userstore;
   };
   return (
     <>
@@ -65,10 +73,7 @@ export default function Login(props) {
               <SignUpText text={"Sign Up"} />
             </Pressable>
           </View>
-          <Pressable
-            onPress={checkLogin}
-            style={styles.loginbuttonstyle}
-          >
+          <Pressable onPress={checkLogin} style={styles.loginbuttonstyle}>
             <HomeText text={"Login"} />
           </Pressable>
         </View>

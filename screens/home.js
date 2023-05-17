@@ -1,4 +1,12 @@
-import { Button, ScrollView, Pressable, Text, View, Image } from "react-native";
+import {
+  Button,
+  ScrollView,
+  Pressable,
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+} from "react-native";
 import * as Location from "expo-location";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -6,6 +14,7 @@ import styles from "./css";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 const HomeScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   const [longitude, setLongitude] = useState();
@@ -16,9 +25,12 @@ const HomeScreen = ({ navigation }) => {
   const [userdetail, setUserdetail] = useState([]);
   const [yourname, setYourname] = useState();
   const [errorMsg, setErrorMsg] = useState(null);
+  const isFocused = useIsFocused();
   useEffect(() => {
-    getcordinates();
-  }, []);
+    if (isFocused) {
+      getcordinates(); 
+    }
+  }, [isFocused]);
   const getcordinates = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -60,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
       );
       getcityusers(loc);
     } catch (err) {
-      console.log(err, "err");
+      // console.log(err, "err");
     }
   };
   const getcityusers = async (data) => {
@@ -94,7 +106,6 @@ const HomeScreen = ({ navigation }) => {
       }
     );
     setUserdetail(detail?.data[0]);
-
     detail?.data[0]?.following?.map(async (users) => {
       let detail = await axios.post(
         "https://fnfservice.onrender.com/user/getuser",
@@ -117,31 +128,9 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  const users = [
-    {
-      id: "1",
-      dp: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-      name: "one",
-    },
-    {
-      id: "2",
-      dp: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-      name: "two",
-    },
-    {
-      id: "3",
-      dp: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-      name: "three",
-    },
-    {
-      id: "4",
-      dp: "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-      name: "four",
-    },
-  ];
-  let usericon = "./assets/user.svg";
   return (
     <>
+      {/* <SafeAreaView> */}
       <ScrollView style={styles.blackBG}>
         <View style={styles.flexfar}>
           <Image
@@ -153,70 +142,71 @@ const HomeScreen = ({ navigation }) => {
               navigation.navigate("Myprofile", { user: userdetail.username })
             }
           >
-            <FontAwesome5 name="user-alt" size={24} color="white" />
+            <FontAwesome5 name="user-alt" size={24} />
           </Pressable>
         </View>
         <View style={styles.flexcenter}>
-          <EvilIcons name="location" size={24} color="white" />
+          <EvilIcons name="location" size={24} />
           <Text style={styles.locationtext} numberOfLines={1}>
             {address} ! Hii {userdetail?.username}
           </Text>
         </View>
         {cityusers.length !== 0 && (
           <View>
-            <Text style={styles.whiteboldtext}>NEARBY !</Text>
+            <Text style={styles.whiteboldtext}>People near you</Text>
           </View>
         )}
-
-        <View style={styles.flexfar}>
+        <ScrollView horizontal={true} style={styles.flexgap}>
           {cityusers?.map((data, id) => {
             return (
-              <>
+              <View key={`nearby-${id}`} style={styles.neabyGap}>
                 {data?.username === yourname ? null : (
-                  <View key={id}>
-                    <View>
-                      <Pressable
-                        key={id}
-                        style={styles.profileicon}
-                        onPress={() =>
-                          navigation.navigate("Profile", {
-                            user: data.username,
-                            yourdetail: userdetail,
-                          })
-                        }
-                      >
-                        {data.dp ? (
-                          <Image
-                            style={styles.profileicon}
-                            source={{ uri: data.dp }}
-                          />
-                        ) : (
-                          <EvilIcons name="user" size={74} color="white" />
-                        )}
-                      </Pressable>
-                      <Text style={styles.nametext}>{data.username}</Text>
-                    </View>
+                  <View>
+                    <Pressable
+                      key={id}
+                      style={styles.profileicon}
+                      onPress={() =>
+                        navigation.navigate("Profile", {
+                          user: data.username,
+                          yourdetail: userdetail,
+                        })
+                      }
+                    >
+                      {data.dp ? (
+                        <Image
+                          style={styles.profileicon}
+                          source={{ uri: data.dp }}
+                        />
+                      ) : (
+                        <EvilIcons name="user" size={54} />
+                      )}
+                    </Pressable>
+                    <Text style={styles.nametext}>{data.username}</Text>
                   </View>
                 )}
-              </>
+              </View>
             );
           })}
-        </View>
-
-        {userfriends.length !== 0 && (
+        </ScrollView>
+        {userfriends?.length !== 0 && (
           <View>
-            <Text style={styles.whiteboldtext}>Friends !</Text>
+            <Text style={styles.whiteboldtext}>People you follow</Text>
           </View>
         )}
-        <View style={styles.flexfar}>
-          {userfriends.map((data, id) => {
+        <ScrollView horizontal={true} style={styles.flexgap}>
+          {userfriends?.map((data, id) => {
             return (
-              <View key={id}>
+              <View key={`friend-${id}`} style={styles.neabyGap}>
                 <View>
                   <Pressable
                     key={id}
                     style={styles.profileicon}
-                    onPress={() => navigation.navigate("Profile")}
+                    onPress={() =>
+                      navigation.navigate("Profile", {
+                        user: data.username,
+                        yourdetail: userdetail,
+                      })
+                    }
                   >
                     {data.dp ? (
                       <Image
@@ -224,7 +214,7 @@ const HomeScreen = ({ navigation }) => {
                         source={{ uri: data.dp }}
                       />
                     ) : (
-                      <EvilIcons name="user" size={74} color="white" />
+                      <EvilIcons name="user" size={54} />
                     )}
                   </Pressable>
                   <Text style={styles.nametext}>{data.username}</Text>
@@ -232,38 +222,35 @@ const HomeScreen = ({ navigation }) => {
               </View>
             );
           })}
-        </View>
+        </ScrollView>
 
-        {friendspost.length !== 0 && (
-          <View>
-            <Text style={styles.whiteboldtext}>Posts !</Text>
-          </View>
-        )}
-        <View style={styles.flexfar}>
-          {friendspost.map((data, id) => {
+        <View style={styles.postflex}>
+          {friendspost?.map((data, id) => {
             return (
-              <>
+              <View key={`postid-${id}`}>
                 {data?.map((image, idi) => {
                   return (
-                    <>
-                      <Pressable
-                        key={id}
-                        onPress={() =>
-                          navigation.navigate("Profile", {
-                            user: image.username,
-                            yourdetail: userdetail,
-                          })
-                        }
-                      >
-                        <Image style={styles.homepost} source={image.post} />
-                      </Pressable>
+                    <Pressable
+                      key={idi}
+                      onPress={() =>
+                        navigation.navigate("Profile", {
+                          user: image.username,
+                          yourdetail: userdetail,
+                        })
+                      }
+                      style={styles.postpressable}
+                    >
+                      <Image
+                        style={styles.homepost}
+                        source={{ uri: image?.post }}
+                      />
                       <Text style={styles.nametext}>
                         {image.username.toUpperCase()}
                       </Text>
-                    </>
+                    </Pressable>
                   );
                 })}
-              </>
+              </View>
             );
           })}
         </View>
@@ -274,6 +261,7 @@ const HomeScreen = ({ navigation }) => {
         <Text>CLICK TO OTHER PROFILE</Text>
       </Pressable> */}
       </ScrollView>
+      {/* </SafeAreaView> */}
     </>
   );
 };

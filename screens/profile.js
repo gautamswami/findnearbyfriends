@@ -8,6 +8,7 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
+  SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -17,8 +18,6 @@ import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import styles, { BioText, HomeText } from "./css";
 import { useState, useEffect } from "react";
-import launchImageLibrary from "react-native-image-picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 const Dp = require("./assets/dp.jpg");
 const socialdata = [
@@ -29,10 +28,11 @@ const socialdata = [
   },
 ];
 const ProfileUserScreen = ({ route, navigation }) => {
-  let { user,yourdetail } = route.params;
+  let { user, yourdetail } = route.params;
   const [expand, setExpand] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [detailmodal, setDetailmodal] = useState(false);
+  const [followsent, setFollowSent] = useState(false);
+
   const [userdetail, setUserdetail] = useState();
   const [userpost, setUserpost] = useState();
   const [yourname, setYourname] = useState();
@@ -46,7 +46,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
     getUser();
     getUserpost();
   }, []);
- 
+
   const getUser = async () => {
     let userdata = await axios.post(
       "https://fnfservice.onrender.com/user/getuser",
@@ -55,6 +55,15 @@ const ProfileUserScreen = ({ route, navigation }) => {
       }
     );
     setUserdetail(userdata?.data[0]);
+    if (userdata?.data[0]?.followbyyourequest?.includes(user)) {
+      setFollowSent(true);
+    }
+    if (userdata?.data[0]?.tofollowyourequest?.includes(user)) {
+      setFollowSent("incoming");
+    }
+    if (userdata?.data[0]?.following?.includes(yourdetail.username)) {
+      setFollowSent("follower");
+    }
   };
   const getUserpost = async () => {
     let userpost = await axios.post(
@@ -66,284 +75,159 @@ const ProfileUserScreen = ({ route, navigation }) => {
     setUserpost(userpost.data);
   };
   const updateuser = async () => {
-    let update = await axios.post("http://localhost:3000/user/updateuser", {
-      find: {
-        username: user,
-      },
-      update: {
-        // username : state
-        bio: "bio",
-        instagram: "ins",
-        snapchat: "sna",
-        facebook: "fb",
-        linkedin: "link",
-        twitter: "tw",
-        youtube: "yt",
-        pinterest: "pintereser",
-        followers: "followers",
-        following: "foll",
-      },
-    });
+    let update = await axios.post(
+      "https://fnfservice.onrender.com/user/updateuser",
+      {
+        find: {
+          username: user,
+        },
+        update: {
+          // username : state
+          bio: "bio",
+          instagram: "ins",
+          snapchat: "sna",
+          facebook: "fb",
+          linkedin: "link",
+          twitter: "tw",
+          youtube: "yt",
+          pinterest: "pintereser",
+          followers: "followers",
+          following: "foll",
+        },
+      }
+    );
   };
   const updateDp = async () => {
     // launchImageLibrary
   };
+  const addfriend = async () => {
+    let friendres = await axios.post(
+      "https://fnfservice.onrender.com/user/followuser",
+      {
+        username: yourdetail.username,
+        tofollowname: user,
+      }
+    );
+    setFollowSent(true);
+  };
   return (
-    <ScrollView style={styles.blackBG}>
-      <Pressable style={styles.padding2} onPress={() => navigation.goBack()}>
-        <Ionicons name="chevron-back" size={24} color="white" />
-      </Pressable>
-      <View style={styles.dpview}>
-      <EvilIcons name="user" size={74} color="white" />
-
-        <Pressable style={styles.dpview}>
-          <Ionicons name="ios-person-add-sharp" size={24} color="white" />
+    <SafeAreaView>
+      <ScrollView style={styles.blackBG}>
+        <Pressable style={styles.padding2} onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={24} />
         </Pressable>
-        <Pressable
-          style={styles.dpview}
-          onPress={() =>
-            navigation.navigate("Messageview", {
-              user: userdetail.username,
-              yourname : yourdetail?.username
-            })
-          }
-        >
-          <Feather name="message-square" size={24} color="white" />
-        </Pressable>
-      </View>
-      <View style={styles.textview}>
-        <HomeText text={userdetail?.username} />
-        <Text style={expand ? styles.biotext : styles.biolessheighttext}>
-          {userdetail?.bio}
-        </Text>
-        {userdetail?.bio && (
-          <Pressable onPress={handleExpand}>
-            {expand ? (
-              <Text style={{ color: "white" }}>...less</Text>
-            ) : (
-              <Text style={{ color: "white" }}>...more</Text>
-            )}
+        <View style={styles.dpview}>
+          <EvilIcons name="user" size={74} /> 
+          {followsent === "incoming" ? (
+            <View>
+            <Text>Requested</Text>
+          </View>
+          ) : followsent === "follower" ? (
+            <View>
+              <Text>Following</Text>
+            </View>
+          ) : followsent === true ? (
+            <View>
+              <Text>Requested</Text>
+            </View>
+          ) : (
+            <Pressable style={styles.dpview} onPress={addfriend}>
+              <Ionicons name="ios-person-add-sharp" size={24} />
+            </Pressable>
+          )}
+          <Pressable
+            style={styles.dpview}
+            onPress={() =>
+              navigation.navigate("Messageview", {
+                user: userdetail.username,
+                yourname: yourdetail?.username,
+              })
+            }
+          >
+            <Feather name="message-square" size={24} />
           </Pressable>
-        )}
-      </View>
-      {(userdetail?.instagram ||
-        userdetail?.snapchat ||
-        userdetail?.facebook ||
-        userdetail?.linkedin ||
-        userdetail?.twitter ||
-        userdetail?.pinterest ||
-        userdetail?.youtube ||
-        userdetail?.whatsapp) && (
-        <View style={styles.socialview}>
-          {userdetail?.instagram && (
-            <Pressable style={styles.socialicon}>
-              <AntDesign name="instagram" size={44} color="#d62976" />
-            </Pressable>
-          )}
-          {userdetail?.snapchat && (
-            <Pressable style={styles.socialicon}>
-              <FontAwesome5 name="snapchat-square" size={44} color="#FFFC00" />
-            </Pressable>
-          )}
-          {userdetail?.facebook && (
-            <Pressable style={styles.socialicon}>
-              <AntDesign name="facebook-square" size={44} color="#3b5998" />
-            </Pressable>
-          )}
-          {userdetail?.linkedin && (
-            <Pressable style={styles.socialicon}>
-              <AntDesign name="linkedin-square" size={44} color="#0A66C2" />
-            </Pressable>
-          )}
-          {userdetail?.twitter && (
-            <Pressable style={styles.socialicon}>
-              <FontAwesome5 name="twitter-square" size={44} color="#3b5998" />
-            </Pressable>
-          )}
-          {userdetail?.pinterest && (
-            <Pressable style={styles.socialicon}>
-              <FontAwesome5 name="pinterest-square" size={44} color="#E60023" />
-            </Pressable>
-          )}
-          {userdetail?.youtube && (
-            <Pressable style={styles.socialicon}>
-              <FontAwesome5 name="youtube" size={44} color="red" />
-            </Pressable>
-          )}
-          {userdetail?.whatsapp && (
-            <Pressable style={styles.socialicon}>
-              <FontAwesome5 name="whatsapp-square" size={44} color="black" />
+        </View>
+        <View style={styles.textview}>
+          <HomeText text={userdetail?.username} />
+          <Text style={expand ? styles.biotext : styles.biolessheighttext}>
+            {userdetail?.bio}
+          </Text>
+          {userdetail?.bio && (
+            <Pressable onPress={handleExpand}>
+              {expand ? <Text>...less</Text> : <Text>...more</Text>}
             </Pressable>
           )}
         </View>
-      )}
-
-      <View style={styles.socialview}>
-        {userpost?.map((post) => {
-          return (
-            <Image source={{ uri: post?.posturl }} style={styles.postimage} />
-          );
-        })}
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={detailmodal}
-          onRequestClose={() => {
-            setDetailmodal(!detailmodal);
-          }}
-        >
-          <ScrollView style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={[styles.flexfar, { width: "100%" }]}>
-                <Text style={styles.whitesmalltext}>Add Details</Text>
-                <Pressable onPress={() => setDetailmodal(!detailmodal)}>
-                  <Ionicons name="close" size={24} color="white" />
-                </Pressable>
-              </View>
-
-              <View style={styles.editmodalbox}>
-                <View>
-                  <EvilIcons name="user" size={74} color="white" />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>username</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={userdetail?.username}
-                  />
-                </View>
-
-                <View>
-                  <Text style={styles.nametext}>Bio</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.bio ? userdetail?.bio : "Enter your bio"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Instagram</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.instagram
-                        ? userdetail?.instagram
-                        : "Enter your Instagram username or url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Snapchat</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.snapchat
-                        ? userdetail?.snapchat
-                        : "Enter your Snapchat username or url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Facebook</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.facebook
-                        ? userdetail?.facebook
-                        : "Enter your Facebook url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Linkedin</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.linkedin
-                        ? userdetail?.linkedin
-                        : "Enter you Linkedin url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Twitter</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.twitter
-                        ? userdetail?.twitter
-                        : "Enter you Twitter username or url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Pinterest</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.pinterest
-                        ? userdetail?.pinterest
-                        : "Enter you Pinterest url"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>Youtube</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.youtube
-                        ? userdetail?.youtube
-                        : "Enter you Youtube link"
-                    }
-                  />
-                </View>
-                <View>
-                  <Text style={styles.nametext}>WhatsApp</Text>
-                  <TextInput
-                    style={styles.editmodalinput}
-                    placeholder={
-                      userdetail?.whatsapp
-                        ? userdetail?.whatsapp
-                        : "Enter you snapchat username or link"
-                    }
-                  />
-                </View>
-                <Pressable style={styles.savebtn} onPress={updateuser}>
-                  <Text style={styles.whitesmalltext}>SAVE</Text>
-                </Pressable>
-              </View>
-            </View>
-          </ScrollView>
-        </Modal>
-      </View>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hello World!</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Hide Modal</Text>
+        {(userdetail?.instagram ||
+          userdetail?.snapchat ||
+          userdetail?.facebook ||
+          userdetail?.linkedin ||
+          userdetail?.twitter ||
+          userdetail?.pinterest ||
+          userdetail?.youtube ||
+          userdetail?.whatsapp) && (
+          <View style={styles.socialview}>
+            {userdetail?.instagram && (
+              <Pressable style={styles.socialicon}>
+                <AntDesign name="instagram" size={44} />
               </Pressable>
-            </View>
+            )}
+            {userdetail?.snapchat && (
+              <Pressable style={styles.socialicon}>
+                <FontAwesome5 name="snapchat-square" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.facebook && (
+              <Pressable style={styles.socialicon}>
+                <AntDesign name="facebook-square" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.linkedin && (
+              <Pressable style={styles.socialicon}>
+                <AntDesign name="linkedin-square" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.twitter && (
+              <Pressable style={styles.socialicon}>
+                <FontAwesome5 name="twitter-square" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.pinterest && (
+              <Pressable style={styles.socialicon}>
+                <FontAwesome5 name="pinterest-square" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.youtube && (
+              <Pressable style={styles.socialicon}>
+                <FontAwesome5 name="youtube" size={44} />
+              </Pressable>
+            )}
+            {userdetail?.whatsapp && (
+              <Pressable style={styles.socialicon}>
+                <FontAwesome5 name="whatsapp-square" size={44} />
+              </Pressable>
+            )}
           </View>
-        </Modal>
-      </View>
-    </ScrollView>
+        )}
+
+        <View style={styles.socialview}>
+          {userpost?.map((post) => {
+            return (
+              <Image source={{ uri: post?.posturl }} style={styles.postimage} />
+            );
+          })}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 export default ProfileUserScreen;
+
+// SOCIAL ICONS COLOURS
+// color="#FFFC00"
+// color="#3b5998"
+// color="#0A66C2"
+// color="#3b5998"
+// color="#E60023"
+// color="red"
+// color="black"

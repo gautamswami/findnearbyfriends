@@ -2,42 +2,38 @@ import { Text, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   blackview: {
-    backgroundColor: "#c3c4ff",
     height: "100%",
     display: "flex",
     justifyContent: "center",
   },
   blackBG: {
-    backgroundColor: "#c3c4ff",
+    paddingTop:40
   },
   marginauto: {
     marginLeft: "auto",
     marginRight: "auto",
   },
   whitesmalltext: {
-    color: "black",
     fontStyle: "normal",
     fontWeight: "600",
     fontSize: 18,
     lineHeight: 22,
-    textAlign: "center",
+    textAlign: "center"
   },
   whiteboldtext: {
-    color: "black",
-    textAlign: "center",
+    textAlign: "left",
     placeContent:"center",
     fontStyle: " normal",
     fontWeight: "700",
-    fontSize: 32,
+    fontSize: 22,
     lineHeight: 39,
     display: "flex",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 10,
     marginTop: 30,
+    paddingLeft:5
   },
   logininput: {
-    color: "white",
-    borderColor: "white",
     borderWidth: 2,
     borderRadius: 10,
     width: 312,
@@ -58,6 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "10%",
     borderRadius: 15,
+    color:'#ffff'
   },
   flexview: {
     display: "flex",
@@ -66,7 +63,6 @@ const styles = StyleSheet.create({
     marginRight: "auto",
   },
   signuptext: {
-    color: "white",
     fontStyle: "normal",
     fontWeight: "600",
     fontSize: 18,
@@ -90,7 +86,7 @@ const styles = StyleSheet.create({
     padding: "4%",
     display: "flex",
     flexDirection: "row",
-    alignItems: "baseline",
+    alignItems: "center",
   },
   dpimage: {
     width: 100,
@@ -107,14 +103,12 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   biotext: {
-    color: "white",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 14,
     lineHeight: 22,
   },
   nametext: {
-    color: "white",
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 14,
@@ -124,7 +118,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   biolessheighttext: {
-    color: "white",
+    
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 14,
@@ -132,10 +126,13 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   socialview: {
-    borderTopColor: "white",
     borderRadius: 35,
     borderWidth: 2,
-    padding: "4%",
+    borderColor:'gray',
+    borderBottomEndRadius:0,
+    borderBottomLeftRadius:0,
+    borderBottomColor:'#e5e5e5',
+    padding: "2%",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
@@ -160,6 +157,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     minWidth: 80,
   },
+  
   logoimage: {
     width: 100,
     height: 50,
@@ -168,32 +166,46 @@ const styles = StyleSheet.create({
     },
   },
   locationtext: {
-    color: "white",
-    width: 150,
+    width: 200,
   },
   flexcenter: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },
+  flexgap:{
+    display:'flex',
+    flexDirection:"row"
+  },
+  neabyGap:{
+marginRight:10
+  },
   profileicon: {
     borderWidth: 1,
-    borderColor: "white",
     borderRadius: 10,
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
     img: {
       width: "100%",
     },
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center'
   },
   homepost: {
     margin: 4,
     borderRadius: 5,
-    borderColor: "white",
-    borderWidth: 1,
-    width: 250,
-    height: 250,
+    width: 300,
+    height: 180,
     overflow: "hidden",
+  
+  },
+  postpressable:{
+    backgroundColor: 'white',
+    borderRadius: 8,
+    elevation: 4, // Add elevation for the shadow effect
+    padding: 6,
+    marginBottom:10
   },
   searchview: {
     flexDirection: "row",
@@ -207,7 +219,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchinput: {
-    color: "white",
     borderRadius: 10,
     width: "90%",
     padding: "2%",
@@ -216,21 +227,19 @@ const styles = StyleSheet.create({
   messagebox: {
     marginLeft: 10,
     marginRight: 10,
-    borderColor: "white",
     borderWidth: 2,
     padding: "1%",
   },
   centeredView: {
     flex: 1,
     marginTop: 22,
-    backgroundColor: "#827a7a63",
   },
   modalView: {
     margin: 20,
-    backgroundColor: "#434343",
+    backgroundColor: "#dedede",
     borderRadius: 20,
-    padding: 5,
-    alignItems: "center",
+    padding: 8,
+    // alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -245,6 +254,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+  },
+  modalreq:{
+    fontWeight:"bold",
+    fontSize:15,
+    marginTop:15,
+    borderBottomColor:'gray',
+    borderBottomWidth:1
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
@@ -265,6 +281,14 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: 10,
   },
+  approveBtn:{
+    backgroundColor:'black',
+    padding:5
+  },
+declineBtn:{
+  backgroundColor:'white',
+  padding:5
+},
   editmodalinput: {
     color: "white",
     borderRadius: 2,
@@ -281,6 +305,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
+  postflex:{
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:10
+  }
 });
 export const HomeText = ({ text }) => {
   return <Text style={styles.whitesmalltext}>{text}</Text>;

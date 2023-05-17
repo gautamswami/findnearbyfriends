@@ -57,8 +57,7 @@ export default function MessageView({ route }) {
         conversationId: convoId,
       }
     );
-    console.log(mess,'mesage')
-    setMessages(mess.data)
+     setMessages(mess.data)
   };
   return (
     <>

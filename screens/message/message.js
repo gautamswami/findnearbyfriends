@@ -1,28 +1,32 @@
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import styles from "../css";
 import { AntDesign } from "@expo/vector-icons";
 import { useEffect } from "react";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-export default function Message({ route,navigation }) {
-
+export default function Message({ route, navigation }) {
   useEffect(() => {
     getUserconvo();
   }, []);
   const getUserconvo = async () => {
-    let yourname = await AsyncStorage.getItem('user')
+    let yourname = await AsyncStorage.getItem("user");
     let userconvo = await axios.post(
-      "https://fnfservice.onrender.com/user/userconversation",{
-       userId:yourname
-    }
+      "https://fnfservice.onrender.com/user/userconversation",
+      {
+        userId: yourname,
+      }
     );
   };
   return (
-    <>
-      {/* <View style={styles.blackview}>
-        <Text style={styles.whiteboldtext}>MESSAGING COMING SOON </Text>
-      </View> */}
-      {/* <View style={styles.blackBG}>
+    <SafeAreaView>
+      <View style={styles.blackBG}>
         <Text style={styles.whiteboldtext}>Chats</Text>
         <View style={styles.searchview}>
           <AntDesign name="search1" size={24} color="white" />
@@ -43,13 +47,10 @@ export default function Message({ route,navigation }) {
             <Text style={styles.biotext}>USERNAME</Text>
           </Pressable>
         </View>
-      </View> */}
-      {/* <Pressable onPress={()=>navigation.navigate('Messageview')}>
-
-        <Text>
-            TEST MESSAGE HOME
-        </Text>
-        </Pressable> */}
-    </>
+      </View>
+      <Pressable onPress={() => navigation.navigate("Messageview")}>
+        <Text>TEST MESSAGE HOME</Text>
+      </Pressable>
+    </SafeAreaView>
   );
 }

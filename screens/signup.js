@@ -28,7 +28,7 @@ export default function SignUp(props) {
         try {
           await AsyncStorage.setItem("user",data.user.username);
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       }
       if (data.message.code === 11000) {
