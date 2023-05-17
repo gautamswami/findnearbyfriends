@@ -16,6 +16,8 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
+import SvgUri from "react-native-svg-uri";
+
 import styles, { BioText, HomeText } from "./css";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -57,11 +59,11 @@ const ProfileUserScreen = ({ route, navigation }) => {
     setUserdetail(userdata?.data[0]);
     if (userdata?.data[0]?.followbyyourequest?.includes(user)) {
       setFollowSent(true);
-    }
-    if (userdata?.data[0]?.tofollowyourequest?.includes(user)) {
+    } else if (
+      userdata?.data[0]?.tofollowyourequest?.includes(yourdetail.username)
+    ) {
       setFollowSent("incoming");
-    }
-    if (userdata?.data[0]?.following?.includes(yourdetail.username)) {
+    } else if (userdata?.data[0]?.following?.includes(yourdetail.username)) {
       setFollowSent("follower");
     }
   };
@@ -74,32 +76,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
     );
     setUserpost(userpost.data);
   };
-  const updateuser = async () => {
-    let update = await axios.post(
-      "https://fnfservice.onrender.com/user/updateuser",
-      {
-        find: {
-          username: user,
-        },
-        update: {
-          // username : state
-          bio: "bio",
-          instagram: "ins",
-          snapchat: "sna",
-          facebook: "fb",
-          linkedin: "link",
-          twitter: "tw",
-          youtube: "yt",
-          pinterest: "pintereser",
-          followers: "followers",
-          following: "foll",
-        },
-      }
-    );
-  };
-  const updateDp = async () => {
-    // launchImageLibrary
-  };
+
   const addfriend = async () => {
     let friendres = await axios.post(
       "https://fnfservice.onrender.com/user/followuser",
@@ -110,114 +87,158 @@ const ProfileUserScreen = ({ route, navigation }) => {
     );
     setFollowSent(true);
   };
+  const avatarUrl = `https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`;
+
   return (
     <SafeAreaView>
-      <ScrollView style={styles.blackBG}>
-        <Pressable style={styles.padding2} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} />
-        </Pressable>
-        <View style={styles.dpview}>
-          <EvilIcons name="user" size={74} /> 
-          {followsent === "incoming" ? (
-            <View>
-            <Text>Requested</Text>
-          </View>
-          ) : followsent === "follower" ? (
-            <View>
-              <Text>Following</Text>
-            </View>
-          ) : followsent === true ? (
-            <View>
-              <Text>Requested</Text>
-            </View>
-          ) : (
-            <Pressable style={styles.dpview} onPress={addfriend}>
-              <Ionicons name="ios-person-add-sharp" size={24} />
-            </Pressable>
-          )}
+      {userdetail?.username ? (
+        <ScrollView style={styles.blackBG}>
           <Pressable
-            style={styles.dpview}
-            onPress={() =>
-              navigation.navigate("Messageview", {
-                user: userdetail.username,
-                yourname: yourdetail?.username,
-              })
-            }
+            style={styles.padding2}
+            onPress={() => navigation.goBack()}
           >
-            <Feather name="message-square" size={24} />
+            <Ionicons name="chevron-back" size={24} />
           </Pressable>
-        </View>
-        <View style={styles.textview}>
-          <HomeText text={userdetail?.username} />
-          <Text style={expand ? styles.biotext : styles.biolessheighttext}>
-            {userdetail?.bio}
-          </Text>
-          {userdetail?.bio && (
-            <Pressable onPress={handleExpand}>
-              {expand ? <Text>...less</Text> : <Text>...more</Text>}
+          <View style={styles.dpview}>
+            <SvgUri
+              source={{
+                uri: avatarUrl,
+              }}
+              width={45}
+              height={45}
+            />
+            {/* <Image source={{ uri: avatarUrl }} style={{ width: 200, height: 200 }} /> */}
+            {/* 
+          {userdetail?.dp ? (
+            <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
+          ) : (
+            <EvilIcons name="user" size={74} />
+          )} */}
+            <Text>{userdetail?.username} </Text>
+            {followsent === "incoming" ? (
+              <View>
+                <Text>Requested</Text>
+              </View>
+            ) : followsent === "follower" ? (
+              <View>
+                <Text>Following</Text>
+              </View>
+            ) : followsent === true ? (
+              <View>
+                <Text>Requested</Text>
+              </View>
+            ) : (
+              <Pressable style={styles.dpview} onPress={addfriend}>
+                <Ionicons name="ios-person-add-sharp" size={24} />
+              </Pressable>
+            )}
+            <Pressable
+              style={styles.dpview}
+              onPress={() =>
+                navigation.navigate("Messageview", {
+                  user: userdetail.username,
+                  yourname: yourdetail?.username,
+                })
+              }
+            >
+              <Feather name="message-square" size={24} />
             </Pressable>
-          )}
-        </View>
-        {(userdetail?.instagram ||
-          userdetail?.snapchat ||
-          userdetail?.facebook ||
-          userdetail?.linkedin ||
-          userdetail?.twitter ||
-          userdetail?.pinterest ||
-          userdetail?.youtube ||
-          userdetail?.whatsapp) && (
-          <View style={styles.socialview}>
-            {userdetail?.instagram && (
-              <Pressable style={styles.socialicon}>
-                <AntDesign name="instagram" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.snapchat && (
-              <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="snapchat-square" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.facebook && (
-              <Pressable style={styles.socialicon}>
-                <AntDesign name="facebook-square" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.linkedin && (
-              <Pressable style={styles.socialicon}>
-                <AntDesign name="linkedin-square" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.twitter && (
-              <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="twitter-square" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.pinterest && (
-              <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="pinterest-square" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.youtube && (
-              <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="youtube" size={44} />
-              </Pressable>
-            )}
-            {userdetail?.whatsapp && (
-              <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="whatsapp-square" size={44} />
-              </Pressable>
-            )}
           </View>
-        )}
+          <View>
+            <Pressable onPress={handleExpand} style={styles.textview}>
+              <Text style={expand ? styles.biotext : styles.biolessheighttext}>
+                {userdetail?.bio}
+              </Text>
+              <Text>
+                {userdetail?.bio &&
+                  userdetail?.bio?.length > 18 &&
+                  expand === false &&
+                  "...."}
+              </Text>
+            </Pressable>
+          </View>
+          {(userdetail?.instagram ||
+            userdetail?.snapchat ||
+            userdetail?.facebook ||
+            userdetail?.linkedin ||
+            userdetail?.twitter ||
+            userdetail?.pinterest ||
+            userdetail?.youtube ||
+            userdetail?.whatsapp) && (
+            <View style={styles.socialview}>
+              {userdetail?.instagram && (
+                <Pressable style={styles.socialicon}>
+                  <AntDesign name="instagram" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.snapchat && (
+                <Pressable style={styles.socialicon}>
+                  <FontAwesome5 name="snapchat-square" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.facebook && (
+                <Pressable style={styles.socialicon}>
+                  <AntDesign name="facebook-square" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.linkedin && (
+                <Pressable style={styles.socialicon}>
+                  <AntDesign name="linkedin-square" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.twitter && (
+                <Pressable style={styles.socialicon}>
+                  <FontAwesome5 name="twitter-square" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.pinterest && (
+                <Pressable style={styles.socialicon}>
+                  <FontAwesome5 name="pinterest-square" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.youtube && (
+                <Pressable style={styles.socialicon}>
+                  <FontAwesome5 name="youtube" size={34} />
+                </Pressable>
+              )}
+              {userdetail?.whatsapp && (
+                <Pressable style={styles.socialicon}>
+                  <FontAwesome5 name="whatsapp-square" size={34} />
+                </Pressable>
+              )}
+            </View>
+          )}
 
-        <View style={styles.socialview}>
-          {userpost?.map((post) => {
-            return (
-              <Image source={{ uri: post?.posturl }} style={styles.postimage} />
-            );
-          })}
-        </View>
-      </ScrollView>
+          <View style={styles.socialview}>
+            {userpost?.map((post) => {
+              return (
+                <Image
+                  source={{ uri: post?.posturl }}
+                  style={styles.postimage}
+                />
+              );
+            })}
+          </View>
+        </ScrollView>
+      ) : (
+        <ScrollView style={styles.blackBG}>
+          <Pressable
+            style={styles.padding2}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="chevron-back" size={24} />
+          </Pressable>
+          <View style={styles.searchview}>
+            <Image
+              style={styles.dpimage}
+              source={{
+                uri: `https://avatars.dicebear.com/api/avataaars/${userdetail?.username}.svg`,
+              }}
+            />
+            <Text style={styles.unapprovedText}>UNAPPROVED USER</Text>
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

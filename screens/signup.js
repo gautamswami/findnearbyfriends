@@ -1,6 +1,6 @@
 import { View, Text, Pressable, TextInput } from "react-native";
 import styles, { HomeBoldText, HomeText, SignUpText, ErrorText } from "./css";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignUp(props) {
@@ -26,7 +26,7 @@ export default function SignUp(props) {
       if (data.message === "sucess") {
         setScreen("home");
         try {
-          await AsyncStorage.setItem("user",data.user.username);
+          await AsyncStorage.setItem("user", data.user.username);
         } catch (error) {
           // console.log(error);
         }
@@ -72,7 +72,7 @@ export default function SignUp(props) {
             </Pressable>
           </View>
           <Pressable onPress={() => signup()} style={styles.loginbuttonstyle}>
-            <HomeText text={"SignUp"} />
+            <Text style={styles.whitesmalltext}>SignUp</Text>
           </Pressable>
         </View>
       </View>

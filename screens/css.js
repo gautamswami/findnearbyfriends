@@ -7,22 +7,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   blackBG: {
-    paddingTop:40
+    paddingTop: 40,
   },
   marginauto: {
     marginLeft: "auto",
     marginRight: "auto",
   },
-  whitesmalltext: {
+  blacksmalltext: {
     fontStyle: "normal",
     fontWeight: "600",
     fontSize: 18,
     lineHeight: 22,
-    textAlign: "center"
+    textAlign: "center",
+  },
+  whitesmalltext: {
+    color: "white",
+    fontStyle: "normal",
+    fontWeight: "600",
+    fontSize: 18,
+    lineHeight: 22,
+    textAlign: "center",
   },
   whiteboldtext: {
     textAlign: "left",
-    placeContent:"center",
+    placeContent: "center",
     fontStyle: " normal",
     fontWeight: "700",
     fontSize: 22,
@@ -31,7 +39,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     marginTop: 30,
-    paddingLeft:5
+    paddingLeft: 5,
   },
   logininput: {
     borderWidth: 2,
@@ -54,7 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: "10%",
     borderRadius: 15,
-    color:'#ffff'
+    color: "#ffff",
   },
   flexview: {
     display: "flex",
@@ -92,11 +100,12 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 10,
-    shadowColor: "white",
+    shadowColor: "black",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 2,
+    borderWidth:2
   },
   textview: {
     padding: "4%",
@@ -106,37 +115,47 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 14,
+    maxWidth: 140,
     lineHeight: 22,
+    color: "gray",
+  },
+  biolessheighttext: {
+    fontStyle: "normal",
+    fontWeight: "400",
+    color: "gray",
+    fontSize: 14,
+    lineHeight: 22,
+    maxWidth: 120,
+    maxHeight: 42,
+    overflow: "hidden",
   },
   nametext: {
     fontStyle: "normal",
     fontWeight: "400",
     fontSize: 14,
     lineHeight: 22,
-    maxWidth: 80,
+    maxWidth: 140,
     maxHeight: 22,
-    overflow: "hidden",
-  },
-  biolessheighttext: {
-    
-    fontStyle: "normal",
-    fontWeight: "400",
-    fontSize: 14,
-    lineHeight: 22,
     overflow: "hidden",
   },
   socialview: {
     borderRadius: 35,
     borderWidth: 2,
-    borderColor:'gray',
-    borderBottomEndRadius:0,
-    borderBottomLeftRadius:0,
-    borderBottomColor:'#e5e5e5',
+    borderColor: "gray",
+    borderBottomEndRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomColor: "#e5e5e5",
     padding: "2%",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
+  },
+  unapprovedText: {
+    color: "gray",
+    fontWeight: "500",
+    textShadowColor: "#888484",
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   socialicon: {
     margin: 9,
@@ -157,7 +176,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     minWidth: 80,
   },
-  
+
   logoimage: {
     width: 100,
     height: 50,
@@ -173,12 +192,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  flexgap:{
-    display:'flex',
-    flexDirection:"row"
+  flexgap: {
+    display: "flex",
+    flexDirection: "row",
   },
-  neabyGap:{
-marginRight:10
+  neabyGap: {
+    marginRight: 10,
   },
   profileicon: {
     borderWidth: 1,
@@ -188,9 +207,9 @@ marginRight:10
     img: {
       width: "100%",
     },
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'center'
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   homepost: {
     margin: 4,
@@ -198,14 +217,13 @@ marginRight:10
     width: 300,
     height: 180,
     overflow: "hidden",
-  
   },
-  postpressable:{
-    backgroundColor: 'white',
+  postpressable: {
+    backgroundColor: "white",
     borderRadius: 8,
     elevation: 4, // Add elevation for the shadow effect
     padding: 6,
-    marginBottom:10
+    marginBottom: 10,
   },
   searchview: {
     flexDirection: "row",
@@ -255,12 +273,12 @@ marginRight:10
     padding: 10,
     elevation: 2,
   },
-  modalreq:{
-    fontWeight:"bold",
-    fontSize:15,
-    marginTop:15,
-    borderBottomColor:'gray',
-    borderBottomWidth:1
+  modalreq: {
+    fontWeight: "bold",
+    fontSize: 15,
+    marginTop: 15,
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
@@ -281,18 +299,18 @@ marginRight:10
     width: "100%",
     padding: 10,
   },
-  approveBtn:{
-    backgroundColor:'black',
-    padding:5
+  approveBtn: {
+    backgroundColor: "black",
+    padding: 5,
   },
-declineBtn:{
-  backgroundColor:'white',
-  padding:5
-},
+  declineBtn: {
+    backgroundColor: "white",
+    padding: 5,
+  },
   editmodalinput: {
-    color: "white",
+    color: "black",
     borderRadius: 2,
-    borderBottomColor: "white",
+    borderBottomColor: "gray",
     borderBottomWidth: 2,
     width: "100%",
     padding: "2%",
@@ -305,15 +323,15 @@ declineBtn:{
     borderRadius: 10,
     padding: 10,
   },
-  postflex:{
-    display:'flex',
-    alignItems:'center',
-    justifyContent:'center',
-    marginTop:10
-  }
+  postflex: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+  },
 });
 export const HomeText = ({ text }) => {
-  return <Text style={styles.whitesmalltext}>{text}</Text>;
+  return <Text style={styles.blacksmalltext}>{text}</Text>;
 };
 export const HomeBoldText = ({ text }) => {
   return <Text style={styles.whiteboldtext}>{text}</Text>;

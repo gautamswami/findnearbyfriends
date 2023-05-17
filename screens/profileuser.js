@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { EvilIcons } from "@expo/vector-icons";
 import styles, { BioText, HomeText } from "./css";
 import React, { useState, useEffect } from "react";
@@ -22,6 +22,7 @@ import ImagePic from "./imagepicker";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendModal from "./friendModal";
+import DetailModal from "./detailModal";
 const socialdata = [
   {
     insta: "one",
@@ -65,31 +66,9 @@ const ProfileUserScreen = ({ route, navigation }) => {
         username: user,
       }
     );
-     setUserpost(userpost.data);
+    setUserpost(userpost.data);
   };
-  const updateuser = async () => {
-    let update = await axios.post(
-      "https://fnfservice.onrender.com/user/updateuser",
-      {
-        find: {
-          username: user,
-        },
-        update: {
-          // username : state
-          bio: "bio",
-          instagram: "ins",
-          snapchat: "sna",
-          facebook: "fb",
-          linkedin: "link",
-          twitter: "tw",
-          youtube: "yt",
-          pinterest: "pintereser",
-          followers: "followers",
-          following: "foll",
-        },
-      }
-    );
-   };
+
   const updateDp = async () => {
     // launchImageLibrary
   };
@@ -119,11 +98,11 @@ const ProfileUserScreen = ({ route, navigation }) => {
           )}
           <Text>{userdetail?.username}</Text>
           <Pressable style={styles.dpview} onPress={detailExpand}>
-            <Feather name="edit" size={24} />
+          <MaterialCommunityIcons name="account-edit" size={24} color="black" />
             <Text>About</Text>
           </Pressable>
           <Pressable style={styles.dpview} onPress={friendExpand}>
-            <FontAwesome5 name="user-friends" size={24} color="black" />
+            <FontAwesome5 name="user-friends" size={20} color="black" />
             <Text>
               Followers
               {userdetail?.followers.length !== 0 && (
@@ -132,20 +111,18 @@ const ProfileUserScreen = ({ route, navigation }) => {
             </Text>
           </Pressable>
         </View>
-        <View style={styles.textview}>
-          
-          <Text style={expand ? styles.biotext : styles.biolessheighttext}>
-            {userdetail?.bio}
-          </Text>
-          {userdetail?.bio && (
-            <Pressable onPress={handleExpand}>
-              {expand ? (
-                <Text style={{ color: "white" }}>.</Text>
-              ) : (
-                <Text style={{ color: "white" }}>...</Text>
-              )}
-            </Pressable>
-          )}
+        <View>
+          <Pressable onPress={handleExpand} style={styles.textview}>
+            <Text style={expand ? styles.biotext : styles.biolessheighttext}>
+              {userdetail?.bio}
+            </Text>
+            <Text>
+              {userdetail?.bio &&
+                (userdetail?.bio?.length > 18) &&
+                expand === false  &&
+                "...."}
+            </Text>
+          </Pressable>
         </View>
         {(userdetail?.instagram ||
           userdetail?.snapchat ||
@@ -158,42 +135,43 @@ const ProfileUserScreen = ({ route, navigation }) => {
           <View style={styles.socialview}>
             {userdetail?.instagram && (
               <Pressable style={styles.socialicon}>
-                <AntDesign name="instagram" size={44} />
+                <AntDesign name="instagram" size={34} />
               </Pressable>
             )}
             {userdetail?.snapchat && (
               <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="snapchat-square" size={44} />
+                <FontAwesome5 name="snapchat-square" size={34} />
               </Pressable>
             )}
             {userdetail?.facebook && (
               <Pressable style={styles.socialicon}>
-                <AntDesign name="facebook-square" size={44} />
+                <AntDesign name="facebook-square" size={34} />
               </Pressable>
             )}
             {userdetail?.linkedin && (
               <Pressable style={styles.socialicon}>
-                <AntDesign name="linkedin-square" size={44} />
+                <AntDesign name="linkedin-square" size={34} />
               </Pressable>
             )}
             {userdetail?.twitter && (
               <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="twitter-square" size={44} />
+                <FontAwesome5 name="twitter-square" size={34} />
               </Pressable>
             )}
             {userdetail?.pinterest && (
               <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="pinterest-square" size={44} />
+                <FontAwesome5 name="pinterest-square" size={34} />
               </Pressable>
             )}
+            {console.log(userdetail,'ud')}
             {userdetail?.youtube && (
               <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="youtube" size={44} />
+                <FontAwesome5 name="youtube" size={34} />
               </Pressable>
             )}
             {userdetail?.whatsapp && (
               <Pressable style={styles.socialicon}>
-                <FontAwesome5 name="whatsapp-square" size={44} />
+                <FontAwesome5 name="whatsapp-square" size={34} />
               </Pressable>
             )}
           </View>
@@ -210,146 +188,20 @@ const ProfileUserScreen = ({ route, navigation }) => {
             })}
           </View>
         )}
-        <View style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={detailmodal}
-            onRequestClose={() => {
-              setDetailmodal(!detailmodal);
-            }}
-          >
-            <ScrollView style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <View style={[styles.flexfar, { width: "100%" }]}>
-                  <Text style={styles.whitesmalltext}>Edit Details</Text>
-                  <Pressable onPress={() => setDetailmodal(!detailmodal)}>
-                    <Ionicons name="close" size={24} />
-                  </Pressable>
-                </View>
-
-                <View style={styles.editmodalbox}>
-                  <View>
-                    <ImagePic />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>username</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={userdetail?.username}
-                    />
-                  </View>
-
-                  <View>
-                    <Text style={styles.nametext}>Bio</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.bio ? userdetail?.bio : "Enter your bio"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Instagram</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.instagram
-                          ? userdetail?.instagram
-                          : "Enter your Instagram username or url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Snapchat</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.snapchat
-                          ? userdetail?.snapchat
-                          : "Enter your Snapchat username or url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Facebook</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.facebook
-                          ? userdetail?.facebook
-                          : "Enter your Facebook url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Linkedin</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.linkedin
-                          ? userdetail?.linkedin
-                          : "Enter you Linkedin url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Twitter</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.twitter
-                          ? userdetail?.twitter
-                          : "Enter you Twitter username or url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Pinterest</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.pinterest
-                          ? userdetail?.pinterest
-                          : "Enter you Pinterest url"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>Youtube</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.youtube
-                          ? userdetail?.youtube
-                          : "Enter you Youtube link"
-                      }
-                    />
-                  </View>
-                  <View>
-                    <Text style={styles.nametext}>WhatsApp</Text>
-                    <TextInput
-                      style={styles.editmodalinput}
-                      placeholder={
-                        userdetail?.whatsapp
-                          ? userdetail?.whatsapp
-                          : "Enter you snapchat username or link"
-                      }
-                    />
-                  </View>
-                  <Pressable style={styles.savebtn} onPress={updateuser}>
-                    <Text style={styles.whitesmalltext}>SAVE</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </ScrollView>
-          </Modal>
-        </View>
+        <DetailModal
+          detailmodal={detailmodal}
+          setDetailmodal={setDetailmodal}
+          userdetail={userdetail}
+          user={user}
+          getUser={getUser}
+          navigation={navigation}
+        />
         {friendmodal && (
           <FriendModal
             user={user}
             friendmodal={friendmodal}
             setFriendmodal={setFriendmodal}
+            navigation={navigation}
           />
         )}
       </ScrollView>

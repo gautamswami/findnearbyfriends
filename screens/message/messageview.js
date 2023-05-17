@@ -63,14 +63,14 @@ export default function MessageView({ route }) {
     <>
     <View style={styles.blackview}>
       <ScrollView>
-      <Text style={styles.whitesmalltext}>{user}</Text>
+      <Text style={styles.blacksmalltext}>{user}</Text>
       
       {messages?.map((message)=>{
          return(
             <>
                   <EvilIcons name="user" size={74} color="white" />
             
-            <Text style={styles.whitesmalltext}>{message?.text}</Text>
+            <Text style={styles.blacksmalltext}>{message?.text}</Text>
             </>
 
          )
@@ -82,11 +82,11 @@ export default function MessageView({ route }) {
       placeholder="send message" />
       {convoId ? (
         <Pressable onPress={handleConvo}>
-          <Text style={styles.whitesmalltext}>SEND</Text>
+          <Text style={styles.blacksmalltext}>SEND</Text>
         </Pressable>
       ) : (
         <Pressable onPress={handleConvo}>
-          <Text style={styles.whitesmalltext}>START CONVO</Text>
+          <Text style={styles.blacksmalltext}>START CONVO</Text>
         </Pressable>
       )}
       </ScrollView>

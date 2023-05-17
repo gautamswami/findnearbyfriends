@@ -43,7 +43,7 @@ export default function Message({ route, navigation }) {
             />
           </Pressable>
           <Pressable>
-            <Text style={styles.whitesmalltext}>USERNAME</Text>
+            <Text style={styles.blacksmalltext}>USERNAME</Text>
             <Text style={styles.biotext}>USERNAME</Text>
           </Pressable>
         </View>

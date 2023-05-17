@@ -4,12 +4,14 @@ import { Text, View, Pressable, Modal, ScrollView } from "react-native";
 import styles from "./css";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function FriendModal({ user, friendmodal, setFriendmodal }) {
+export default function FriendModal({ user,friendmodal, setFriendmodal }) {
   const [followers, setFollowers] = useState([]);
   const [following, setFollowing] = useState([]);
   const [folloreq, setFolloreq] = useState([]);
   const [userdetail, setUserDetail] = useState([]);
+  const [loading,setLoading] = useState()
   const handleAccept = async (followername) => {
+    setLoading(true);
     let userdata = await axios.post(
       "https://fnfservice.onrender.com/user/acceptfollow",
       {
@@ -18,7 +20,9 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
       }
     );
     if (userdata) {
-        handleGet()
+      handleGet();
+      setLoading(false);
+      
     }
   };
   const deleteFollowrequest = async (followername) => {
@@ -39,7 +43,7 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
       }
     );
     if (userdata?.data?.acknowledged) {
-        handleGet()
+      handleGet();
     }
   };
   const deleteFollower = async (followername) => {
@@ -51,7 +55,7 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
       }
     );
     if (userdata?.data?.acknowledged) {
-        handleGet()
+      handleGet();
     }
   };
   const handleGet = async () => {
@@ -61,13 +65,12 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
         username: user,
       }
     );
-    setUserDetail(userFollowers?.data[0],'rest')
+    setUserDetail(userFollowers?.data[0], "rest");
     setFollowers(userFollowers?.data[0].followers);
     setFollowing(userFollowers?.data[0].following);
     setFolloreq(userFollowers?.data[0].tofollowyourequest);
   };
   useEffect(() => {
-  
     handleGet();
   }, []);
   return (
@@ -83,13 +86,13 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
         <ScrollView style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={[styles.flexfar, { width: "100%" }]}>
-              <Text style={styles.whitesmalltext}>Followers</Text>
+              <Text style={styles.blacksmalltext}>Followers</Text>
               <Pressable onPress={() => setFriendmodal(!friendmodal)}>
                 <Ionicons name="close" size={24} />
               </Pressable>
             </View>
             <Text style={styles.modalreq}>{folloreq?.length} New requests</Text>
-
+          {!loading && <View>
             {folloreq?.map((data, id) => {
               return (
                 <View key={`request-${id}`} style={styles.flexfar}>
@@ -108,8 +111,8 @@ export default function FriendModal({ user, friendmodal, setFriendmodal }) {
                   </Pressable>
                 </View>
               );
-            })}
-
+            })}</View>
+          }
             <Text style={styles.modalreq}>
               {userdetail?.followers?.length} Followers
             </Text>

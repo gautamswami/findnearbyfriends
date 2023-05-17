@@ -43,7 +43,7 @@ export default function Login(props) {
   }, []);
   const checkUserLogin = async () => {
     let userstore = await AsyncStorage.getItem("user");
-    
+ 
     if (userstore && userstore?.length !== 0) {
       setScreen("home");
     }
@@ -74,7 +74,7 @@ export default function Login(props) {
             </Pressable>
           </View>
           <Pressable onPress={checkLogin} style={styles.loginbuttonstyle}>
-            <HomeText text={"Login"} />
+            <Text style={styles.whitesmalltext}>Login</Text>
           </Pressable>
         </View>
       </View>

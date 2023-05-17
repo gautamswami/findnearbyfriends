@@ -8,14 +8,19 @@ import {
   SafeAreaView,
 } from "react-native";
 import * as Location from "expo-location";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-import styles from "./css";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import SvgUri from "react-native-svg-uri";
+
+import styles from "./css";
+import { MyContext } from "./MyContext";
+
 const HomeScreen = ({ navigation }) => {
+  const { screenVisible, setScreenVisible } = useContext(MyContext);
   const [location, setLocation] = useState(null);
   const [longitude, setLongitude] = useState();
   const [userfriends, setUserfriends] = useState([]);
@@ -28,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   useEffect(() => {
     if (isFocused) {
-      getcordinates(); 
+      getcordinates();
     }
   }, [isFocused]);
   const getcordinates = async () => {
@@ -50,8 +55,13 @@ const HomeScreen = ({ navigation }) => {
         username: user,
       }
     );
-    setUserdetail(detail?.data[0]);
-    getlocation(location, user);
+    if (detail?.data[0]) {
+      setUserdetail(detail?.data[0]);
+      getlocation(location, user);
+    } else if (!detail?.data[0]) {
+      await AsyncStorage.clear();
+      setScreenVisible("login");
+    }
   };
   const getlocation = async (data, user) => {
     let res = await fetch(
@@ -77,23 +87,25 @@ const HomeScreen = ({ navigation }) => {
   };
   const getcityusers = async (data) => {
     try {
-      let cityusers = await axios.post(
+      let city = await axios.post(
         "https://fnfservice.onrender.com/user/getcityusers",
         {
-          usercity: data.data.usercity,
+          usercity: data?.data?.usercity || "gurugram",
         }
       );
-      cityusers.data.map(async (users) => {
-        let detail = await axios.post(
-          "https://fnfservice.onrender.com/user/getuser",
-          {
-            username: users.username,
-          }
-        );
-        if (detail?.data[0] !== undefined) {
-          setCityusers((cityusers) => [...cityusers, detail?.data[0]]);
-        }
-      });
+
+      setCityusers(city?.data);
+      // cityusers.data.map(async (users) => {
+      //   let detail = await axios.post(
+      //     "https://fnfservice.onrender.com/user/getuser",
+      //     {
+      //       username: users.username,
+      //     }
+      //   );
+      //   if (detail?.data[0] !== undefined) {
+      //     setCityusers((cityusers) => [...cityusers, detail?.data[0]]);
+      //   }
+      // });
       getFriends();
     } catch (error) {}
   };
@@ -160,7 +172,7 @@ const HomeScreen = ({ navigation }) => {
           {cityusers?.map((data, id) => {
             return (
               <View key={`nearby-${id}`} style={styles.neabyGap}>
-                {data?.username === yourname ? null : (
+                {!data?.username || data?.username === yourname ? null : (
                   <View>
                     <Pressable
                       key={id}
@@ -172,14 +184,13 @@ const HomeScreen = ({ navigation }) => {
                         })
                       }
                     >
-                      {data.dp ? (
-                        <Image
-                          style={styles.profileicon}
-                          source={{ uri: data.dp }}
-                        />
-                      ) : (
-                        <EvilIcons name="user" size={54} />
-                      )}
+                      <SvgUri
+                        source={{
+                          uri: `https://avatars.dicebear.com/api/micah/${data.username}.svg`,
+                        }}
+                        width={45}
+                        height={45}
+                      />
                     </Pressable>
                     <Text style={styles.nametext}>{data.username}</Text>
                   </View>
