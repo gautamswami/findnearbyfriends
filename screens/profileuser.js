@@ -11,25 +11,19 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import styles, { BioText, HomeText } from "./css";
 import React, { useState, useEffect } from "react";
 import ImagePic from "./imagepicker";
 import axios from "axios";
+import { SvgUri } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendModal from "./friendModal";
 import DetailModal from "./detailModal";
-const socialdata = [
-  {
-    insta: "one",
-    fb: "fb2",
-    snap: "snap3",
-  },
-];
+
 const ProfileUserScreen = ({ route, navigation }) => {
   let { user } = route.params;
   const [expand, setExpand] = useState(false);
@@ -91,14 +85,24 @@ const ProfileUserScreen = ({ route, navigation }) => {
         </View>
 
         <View style={styles.dpview}>
+
           {userdetail?.dp ? (
             <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
           ) : (
-            <EvilIcons name="user" size={74} />
+            <SvgUri
+              uri={`https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`}
+              width={60}
+              height={60}
+              style={styles.dpimage}
+            />
           )}
           <Text>{userdetail?.username}</Text>
           <Pressable style={styles.dpview} onPress={detailExpand}>
-          <MaterialCommunityIcons name="account-edit" size={24} color="black" />
+            <MaterialCommunityIcons
+              name="account-edit"
+              size={24}
+              color="black"
+            />
             <Text>About</Text>
           </Pressable>
           <Pressable style={styles.dpview} onPress={friendExpand}>
@@ -118,8 +122,8 @@ const ProfileUserScreen = ({ route, navigation }) => {
             </Text>
             <Text>
               {userdetail?.bio &&
-                (userdetail?.bio?.length > 18) &&
-                expand === false  &&
+                userdetail?.bio?.length > 18 &&
+                expand === false &&
                 "...."}
             </Text>
           </Pressable>
@@ -163,7 +167,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
                 <FontAwesome5 name="pinterest-square" size={34} />
               </Pressable>
             )}
-            {console.log(userdetail,'ud')}
+            {console.log(userdetail, "ud")}
             {userdetail?.youtube && (
               <Pressable style={styles.socialicon}>
                 <FontAwesome5 name="youtube" size={34} />

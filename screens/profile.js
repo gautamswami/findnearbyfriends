@@ -14,35 +14,19 @@ import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
-import SvgUri from "react-native-svg-uri";
-
+import { SvgUri } from "react-native-svg";
 import styles, { BioText, HomeText } from "./css";
 import { useState, useEffect } from "react";
 import axios from "axios";
-const Dp = require("./assets/dp.jpg");
-const socialdata = [
-  {
-    insta: "one",
-    fb: "fb2",
-    snap: "snap3",
-  },
-];
+
 const ProfileUserScreen = ({ route, navigation }) => {
   let { user, yourdetail } = route.params;
   const [expand, setExpand] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [followsent, setFollowSent] = useState(false);
-
   const [userdetail, setUserdetail] = useState();
   const [userpost, setUserpost] = useState();
-  const [yourname, setYourname] = useState();
   const handleExpand = () => {
     setExpand(!expand);
-  };
-  const detailExpand = () => {
-    setDetailmodal(!detailmodal);
   };
   useEffect(() => {
     getUser();
@@ -87,7 +71,6 @@ const ProfileUserScreen = ({ route, navigation }) => {
     );
     setFollowSent(true);
   };
-  const avatarUrl = `https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`;
 
   return (
     <SafeAreaView>
@@ -101,19 +84,11 @@ const ProfileUserScreen = ({ route, navigation }) => {
           </Pressable>
           <View style={styles.dpview}>
             <SvgUri
-              source={{
-                uri: avatarUrl,
-              }}
-              width={45}
-              height={45}
+              uri={`https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`}
+              width={60}
+              height={60}
+              style={styles.dpimage}
             />
-            {/* <Image source={{ uri: avatarUrl }} style={{ width: 200, height: 200 }} /> */}
-            {/* 
-          {userdetail?.dp ? (
-            <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
-          ) : (
-            <EvilIcons name="user" size={74} />
-          )} */}
             <Text>{userdetail?.username} </Text>
             {followsent === "incoming" ? (
               <View>
@@ -229,12 +204,13 @@ const ProfileUserScreen = ({ route, navigation }) => {
             <Ionicons name="chevron-back" size={24} />
           </Pressable>
           <View style={styles.searchview}>
-            <Image
+            <SvgUri
+              uri={`https://avatars.dicebear.com/api/micah/undefined.svg`}
+              width={100}
+              height={100}
               style={styles.dpimage}
-              source={{
-                uri: `https://avatars.dicebear.com/api/avataaars/${userdetail?.username}.svg`,
-              }}
             />
+
             <Text style={styles.unapprovedText}>UNAPPROVED USER</Text>
           </View>
         </ScrollView>

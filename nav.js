@@ -20,10 +20,8 @@ const TabNav = ({ navigation }) => {
     <>
       <NavigationContainer independent={true}>
         <Tab.Navigator
-          tabBarOptions={{
-            showLabel: false,
-          }}
           screenOptions={
+            
             ({ route }) => ({
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
@@ -50,12 +48,15 @@ const TabNav = ({ navigation }) => {
                 // <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="black" />
                 ;
               },
+              tabBarShowLabel: false,
               tabBarActiveTintColor: 'tomato',
               tabBarInactiveTintColor: 'gray',
               tabBarStyle: [
                 {
+                  display: "flex",
                   backgroundColor: "black",
                 },
+                null
               ],
             })
            }

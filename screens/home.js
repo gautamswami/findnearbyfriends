@@ -14,7 +14,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import SvgUri from "react-native-svg-uri";
+import { SvgUri } from "react-native-svg";
 
 import styles from "./css";
 import { MyContext } from "./MyContext";
@@ -172,7 +172,7 @@ const HomeScreen = ({ navigation }) => {
           {cityusers?.map((data, id) => {
             return (
               <View key={`nearby-${id}`} style={styles.neabyGap}>
-                {!data?.username || data?.username === yourname ? null : (
+                {!data?.username || data?.username === yourname || data?.username === undefined ? null : (
                   <View>
                     <Pressable
                       key={id}
@@ -185,11 +185,10 @@ const HomeScreen = ({ navigation }) => {
                       }
                     >
                       <SvgUri
-                        source={{
-                          uri: `https://avatars.dicebear.com/api/micah/${data.username}.svg`,
-                        }}
-                        width={45}
-                        height={45}
+                        uri={`https://avatars.dicebear.com/api/micah/${data.username}.svg`}
+                        width={60}
+                        height={60}
+                        style={styles.dpimage}
                       />
                     </Pressable>
                     <Text style={styles.nametext}>{data.username}</Text>

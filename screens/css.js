@@ -105,7 +105,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 2,
-    borderWidth:2
+    borderWidth:2,
+    borderColor:'black'
   },
   textview: {
     padding: "4%",
