@@ -35,37 +35,41 @@ export default function DetailModal({
   const [userwhatsapp, setUserwhatsapp] = useState(userdetail?.whatsapp);
 
   const updateuser = async () => {
-    let update = await axios.post(
-      "https://fnfservice.onrender.com/user/updateuser",
-      {
-        find: {
-          username: user,
-        },
-        update: {
-          username: username,
-          bio: userbio,
-          instagram: userinstagram,
-          snapchat: usersnapchat,
-          facebook: userfacebook,
-          linkedin: userlinkedin,
-          twitter: usertwitter,
-          youtube: useryoutube,
-          pinterest: userpinterest,
-          whatsapp: userwhatsapp,
-        },
+    try {
+      let update = await axios.post(
+        "https://fnfservice.onrender.com/user/updateuser",
+        {
+          find: {
+            username: user,
+          },
+          update: {
+            username: username,
+            bio: userbio,
+            instagram: userinstagram,
+            snapchat: usersnapchat,
+            facebook: userfacebook,
+            linkedin: userlinkedin,
+            twitter: usertwitter,
+            youtube: useryoutube,
+            pinterest: userpinterest,
+            whatsapp: userwhatsapp,
+          },
+        }
+      );
+      if (user !== update?.data?.username) {
+        await AsyncStorage.setItem("user", update?.data?.username);
+        navigation.navigate("Home");
+      } else if (
+        Object.keys(update).length === 0 &&
+        update.constructor === Object
+      ) {
+        ToastAndroid.show("Please try another username", ToastAndroid.SHORT);
+      } else if (Object.keys(update).length !== 0) {
+        setDetailmodal(!detailmodal);
+        getUser();
       }
-    );
-    if (user !== update?.data?.username) {
-      await AsyncStorage.setItem("user", update?.data?.username);
-      navigation.navigate("Home");
-    } else if (
-      Object.keys(update).length === 0 &&
-      update.constructor === Object
-    ) {
+    } catch (err) {
       ToastAndroid.show("Please try another username", ToastAndroid.SHORT);
-    } else if (Object.keys(update).length !== 0) {
-      setDetailmodal(!detailmodal);
-      getUser();
     }
   };
   return (
@@ -90,7 +94,7 @@ export default function DetailModal({
 
               <View style={styles.editmodalbox}>
                 <View>
-                  <ImagePic />
+                  <ImagePic content={"displayPicture"}/>
                 </View>
                 <View>
                   <Text style={styles.nametext}>Username</Text>
@@ -146,7 +150,7 @@ export default function DetailModal({
                     placeholder={
                       userdetail?.facebook
                         ? userdetail?.facebook
-                        : "Enter your Facebook url"
+                        : "Enter your Facebook username"
                     }
                     onChangeText={(userfacebook) =>
                       setUserfacebook(userfacebook)

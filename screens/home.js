@@ -5,7 +5,6 @@ import {
   Text,
   View,
   Image,
-  SafeAreaView,
 } from "react-native";
 import * as Location from "expo-location";
 import React, { useState, useEffect, useContext } from "react";
@@ -95,51 +94,34 @@ const HomeScreen = ({ navigation }) => {
       );
 
       setCityusers(city?.data);
-      // cityusers.data.map(async (users) => {
-      //   let detail = await axios.post(
-      //     "https://fnfservice.onrender.com/user/getuser",
-      //     {
-      //       username: users.username,
-      //     }
-      //   );
-      //   if (detail?.data[0] !== undefined) {
-      //     setCityusers((cityusers) => [...cityusers, detail?.data[0]]);
-      //   }
-      // });
-      getFriends();
+      getFriendsPost();
     } catch (error) {}
   };
-  const getFriends = async () => {
+  const getFriendsPost = async () => {
     let user = await AsyncStorage.getItem("user");
     let detail = await axios.post(
-      "https://fnfservice.onrender.com/user/getuser",
+      "https://fnfservice.onrender.com/user/friendsposts",
       {
         username: user,
       }
     );
-    setUserdetail(detail?.data[0]);
-    detail?.data[0]?.following?.map(async (users) => {
-      let detail = await axios.post(
-        "https://fnfservice.onrender.com/user/getuser",
-        {
-          username: users,
-        }
-      );
-      let userpost = await axios.post(
-        "https://fnfservice.onrender.com/user/getpost",
-        {
-          username: users,
-        }
-      );
-      if (userpost?.data) {
-        setFriendspost((friendspost) => [...friendspost, userpost?.data]);
-      }
-      if (detail?.data[0] !== undefined) {
-        setUserfriends((userfriends) => [...userfriends, detail?.data[0]]);
-      }
-    });
+    setFriendspost(detail?.data);
   };
 
+  function getNumber(inputString) {
+    if (inputString) {
+      let hash = 0;
+      let options = ["avataaars", "micah", "bottts", "gridy", "human"];
+      for (let i = 0; i < inputString.length; i++) {
+        hash = inputString.charCodeAt(i) + ((hash << 4) - hash);
+      }
+      const number = Math.abs(hash % 4);
+      let res = options[number];
+      return res;
+    } else if (!inputString) {
+      return "micah";
+    }
+  }
   return (
     <>
       {/* <SafeAreaView> */}
@@ -172,7 +154,9 @@ const HomeScreen = ({ navigation }) => {
           {cityusers?.map((data, id) => {
             return (
               <View key={`nearby-${id}`} style={styles.neabyGap}>
-                {!data?.username || data?.username === yourname || data?.username === undefined ? null : (
+                {!data?.username ||
+                data?.username === yourname ||
+                data?.username === undefined ? null : (
                   <View>
                     <Pressable
                       key={id}
@@ -185,26 +169,28 @@ const HomeScreen = ({ navigation }) => {
                       }
                     >
                       <SvgUri
-                        uri={`https://avatars.dicebear.com/api/micah/${data.username}.svg`}
-                        width={60}
-                        height={60}
+                        uri={`https://avatars.dicebear.com/api/${getNumber(
+                          data.username
+                        )}/${data.username}.svg`}
+                        width={50}
+                        height={50}
                         style={styles.dpimage}
                       />
+                      <Text style={styles.nametext}>{data.username}</Text>
                     </Pressable>
-                    <Text style={styles.nametext}>{data.username}</Text>
                   </View>
                 )}
               </View>
             );
           })}
         </ScrollView>
-        {userfriends?.length !== 0 && (
+        {userdetail?.following?.length !== 0 && (
           <View>
             <Text style={styles.whiteboldtext}>People you follow</Text>
           </View>
         )}
         <ScrollView horizontal={true} style={styles.flexgap}>
-          {userfriends?.map((data, id) => {
+          {userdetail?.following?.map((data, id) => {
             return (
               <View key={`friend-${id}`} style={styles.neabyGap}>
                 <View>
@@ -213,7 +199,7 @@ const HomeScreen = ({ navigation }) => {
                     style={styles.profileicon}
                     onPress={() =>
                       navigation.navigate("Profile", {
-                        user: data.username,
+                        user: data,
                         yourdetail: userdetail,
                       })
                     }
@@ -224,10 +210,17 @@ const HomeScreen = ({ navigation }) => {
                         source={{ uri: data.dp }}
                       />
                     ) : (
-                      <EvilIcons name="user" size={54} />
+                    <SvgUri
+                      uri={`https://avatars.dicebear.com/api/${getNumber(
+                        data
+                      )}/${data}.svg`}
+                      width={50}
+                      height={50}
+                      style={styles.dpimage}
+                    />
                     )}
+                    <Text style={styles.nametext}>{data}</Text>
                   </Pressable>
-                  <Text style={styles.nametext}>{data.username}</Text>
                 </View>
               </View>
             );
@@ -235,31 +228,27 @@ const HomeScreen = ({ navigation }) => {
         </ScrollView>
 
         <View style={styles.postflex}>
-          {friendspost?.map((data, id) => {
+          {friendspost?.map((image, id) => {
             return (
               <View key={`postid-${id}`}>
-                {data?.map((image, idi) => {
-                  return (
-                    <Pressable
-                      key={idi}
-                      onPress={() =>
-                        navigation.navigate("Profile", {
-                          user: image.username,
-                          yourdetail: userdetail,
-                        })
-                      }
-                      style={styles.postpressable}
-                    >
-                      <Image
-                        style={styles.homepost}
-                        source={{ uri: image?.post }}
-                      />
-                      <Text style={styles.nametext}>
-                        {image.username.toUpperCase()}
-                      </Text>
-                    </Pressable>
-                  );
-                })}
+                <Pressable
+                  key={id}
+                  onPress={() =>
+                    navigation.navigate("Profile", {
+                      user: image.username,
+                      yourdetail: userdetail,
+                    })
+                  }
+                  style={styles.postpressable}
+                >
+                  <Image
+                    style={styles.homepost}
+                    source={{ uri: image?.post }}
+                  />
+                  <Text style={styles.nametext}>
+                    {image.username.toUpperCase()}
+                  </Text>
+                </Pressable>
               </View>
             );
           })}

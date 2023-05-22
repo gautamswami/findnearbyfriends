@@ -1,11 +1,6 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Profile from "./profile";
-import { Button, Text } from "react-native";
-import HomeScreen from "./home";
-import ProfileScreen from "./profile";
-import TabNav from "../nav";
 import ProfileUserScreen from "./profileuser";
 import Message from "./message/message";
 import MessageView from "./message/messageview";
@@ -23,11 +18,11 @@ export default function MessageNav() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="Messageview"
+            name="Messages"
             // options={{ headerShown: false }}
             component={MessageView}
           />
-         <Stack.Screen
+          <Stack.Screen
             name="Myprofile"
             // options={{ headerShown: false }}
             component={ProfileUserScreen}

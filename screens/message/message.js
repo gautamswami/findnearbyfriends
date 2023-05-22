@@ -35,7 +35,7 @@ export default function Message({ route, navigation }) {
         <View style={styles.messagebox}>
           <Pressable
             style={styles.profileicon}
-            onPress={() => navigation.navigate("Messageview")}
+            onPress={() => navigation.navigate("Messages")}
           >
             <Image
               style={styles.profileicon}
@@ -48,7 +48,7 @@ export default function Message({ route, navigation }) {
           </Pressable>
         </View>
       </View>
-      <Pressable onPress={() => navigation.navigate("Messageview")}>
+      <Pressable onPress={() => navigation.navigate("Messages")}>
         <Text>TEST MESSAGE HOME</Text>
       </Pressable>
     </SafeAreaView>

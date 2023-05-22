@@ -99,14 +99,15 @@ const styles = StyleSheet.create({
   dpimage: {
     width: 100,
     height: 100,
-    borderRadius: 10,
+    // borderRadius: 10,
+    // borderWidth: 2,
+    // borderColor: "black",
+    // padding: 3,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 2,
-    borderWidth:2,
-    borderColor:'black'
   },
   textview: {
     padding: "4%",
@@ -201,13 +202,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   profileicon: {
-    borderWidth: 1,
-    borderRadius: 10,
+    // borderWidth: 1,
+    // borderRadius: 10,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+    elevation: 2,
+    padding: 4,
     width: 70,
-    height: 70,
-    img: {
-      width: "100%",
-    },
+    height: 80,
+    // img: {
+    //   width: "100%",
+    // },
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -218,6 +225,15 @@ const styles = StyleSheet.create({
     width: 300,
     height: 180,
     overflow: "hidden",
+  },
+  deleteButton:{
+    position:'absolute',
+    top:0,
+    right:0,
+  padding:4,
+  backgroundColor:'#afafaf63',
+  margin:2,
+  borderRadius:5
   },
   postpressable: {
     backgroundColor: "white",
@@ -328,7 +344,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: 50,
+    marginBottom: 40,
   },
 });
 export const HomeText = ({ text }) => {

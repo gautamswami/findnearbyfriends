@@ -4,11 +4,8 @@ import {
   View,
   Image,
   ScrollView,
-  Alert,
-  Modal,
-  TextInput,
-  ToastAndroid,
   SafeAreaView,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -47,7 +44,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
       userdata?.data[0]?.tofollowyourequest?.includes(yourdetail.username)
     ) {
       setFollowSent("incoming");
-    } else if (userdata?.data[0]?.following?.includes(yourdetail.username)) {
+    } else if (yourdetail?.following?.includes(user)) {
       setFollowSent("follower");
     }
   };
@@ -71,7 +68,48 @@ const ProfileUserScreen = ({ route, navigation }) => {
     );
     setFollowSent(true);
   };
-
+  function getNumber(inputString) {
+    let hash = 0;
+    let options = ["avataaars", "micah", "bottts", "gridy", "human"];
+    for (let i = 0; i < inputString.length; i++) {
+      hash = inputString.charCodeAt(i) + ((hash << 4) - hash);
+    }
+    const number = Math.abs(hash % 4);
+    let res = options[number];
+    return res;
+  }
+  const handleLink = async (url, name) => {
+    let link;
+    switch (name) {
+      case "instagram":
+        link = `https://www.instagram.com/${url}`;
+        break;
+      case "snapchat":
+        link = `https://www.snapchat.com/add/${url}`;
+        break;
+      case "facebook":
+        link = `https://www.facebook.com/${url}`;
+        break;
+      case "linkedin":
+        link = `${url}`;
+        break;
+      case "twitter":
+        link = `https://www.twitter.com/${url}`;
+        break;
+      case "pinterest":
+        link = `https://www.pinterest.com/${url}`;
+        break;
+      case "youtube":
+        link = `${url}`;
+        break;
+      case "whatsapp":
+        link = `https://wa.me/${url}`;
+        break;
+      default:
+        link = `https://www.google.com/search?q=${url}`;
+    }
+    Linking.openURL(link);
+  };
   return (
     <SafeAreaView>
       {userdetail?.username ? (
@@ -82,13 +120,15 @@ const ProfileUserScreen = ({ route, navigation }) => {
           >
             <Ionicons name="chevron-back" size={24} />
           </Pressable>
+          <SvgUri
+            uri={`https://avatars.dicebear.com/api/${getNumber(
+              userdetail?.username
+            )}/${userdetail?.username}.svg`}
+            width={60}
+            height={60}
+            style={styles.dpimage}
+          />
           <View style={styles.dpview}>
-            <SvgUri
-              uri={`https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`}
-              width={60}
-              height={60}
-              style={styles.dpimage}
-            />
             <Text>{userdetail?.username} </Text>
             {followsent === "incoming" ? (
               <View>
@@ -96,7 +136,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
               </View>
             ) : followsent === "follower" ? (
               <View>
-                <Text>Following</Text>
+                <Text></Text>
               </View>
             ) : followsent === true ? (
               <View>
@@ -110,7 +150,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
             <Pressable
               style={styles.dpview}
               onPress={() =>
-                navigation.navigate("Messageview", {
+                navigation.navigate("Messages", {
                   user: userdetail.username,
                   yourname: yourdetail?.username,
                 })
@@ -142,58 +182,86 @@ const ProfileUserScreen = ({ route, navigation }) => {
             userdetail?.whatsapp) && (
             <View style={styles.socialview}>
               {userdetail?.instagram && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.instagram, "instagram")}
+                >
                   <AntDesign name="instagram" size={34} />
                 </Pressable>
               )}
               {userdetail?.snapchat && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.snapchat, "snapchat")}
+                >
                   <FontAwesome5 name="snapchat-square" size={34} />
                 </Pressable>
               )}
               {userdetail?.facebook && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.facebook, "facebook")}
+                >
                   <AntDesign name="facebook-square" size={34} />
                 </Pressable>
               )}
               {userdetail?.linkedin && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.linkedin, "linkedin")}
+                >
                   <AntDesign name="linkedin-square" size={34} />
                 </Pressable>
               )}
               {userdetail?.twitter && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.twitter, "twitter")}
+                >
                   <FontAwesome5 name="twitter-square" size={34} />
                 </Pressable>
               )}
               {userdetail?.pinterest && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.pinterest, "pinterest")}
+                >
                   <FontAwesome5 name="pinterest-square" size={34} />
                 </Pressable>
               )}
               {userdetail?.youtube && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.youtube, "youtube")}
+                >
                   <FontAwesome5 name="youtube" size={34} />
                 </Pressable>
               )}
               {userdetail?.whatsapp && (
-                <Pressable style={styles.socialicon}>
+                <Pressable
+                  style={styles.socialicon}
+                  onPress={() => handleLink(userdetail?.whatsapp, "whatsapp")}
+                >
                   <FontAwesome5 name="whatsapp-square" size={34} />
                 </Pressable>
               )}
             </View>
           )}
-
-          <View style={styles.socialview}>
-            {userpost?.map((post) => {
-              return (
-                <Image
-                  source={{ uri: post?.posturl }}
-                  style={styles.postimage}
-                />
-              );
-            })}
-          </View>
+          {userpost?.length !== 0 && (
+            <View style={styles.postflex}>
+              {userpost?.map((post, id) => {
+                return (
+                  <Pressable key={`postkey-${id}`} style={styles.postpressable}>
+                    <Image
+                      style={styles.homepost}
+                      source={{ uri: post?.post }}
+                      // style={styles.postimage}
+                    />
+                  </Pressable>
+                );
+              })}
+            </View>
+          )}
         </ScrollView>
       ) : (
         <ScrollView style={styles.blackBG}>
@@ -205,7 +273,7 @@ const ProfileUserScreen = ({ route, navigation }) => {
           </Pressable>
           <View style={styles.searchview}>
             <SvgUri
-              uri={`https://avatars.dicebear.com/api/micah/undefined.svg`}
+              uri={`https://avatars.dicebear.com/api/avataaars/undefined.svg`}
               width={100}
               height={100}
               style={styles.dpimage}

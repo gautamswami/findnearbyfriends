@@ -8,9 +8,10 @@ import {
   Modal,
   TextInput,
   ToastAndroid,
+  Linking,
   SafeAreaView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -62,11 +63,59 @@ const ProfileUserScreen = ({ route, navigation }) => {
     );
     setUserpost(userpost.data);
   };
-
-  const updateDp = async () => {
-    // launchImageLibrary
+  const handleLink = async (url, name) => {
+    let link;
+    switch (name) {
+      case "instagram":
+        link = `https://www.instagram.com/${url}`;
+        break;
+      case "snapchat":
+        link = `https://www.snapchat.com/add/${url}`;
+        break;
+      case "facebook":
+        link = `https://www.facebook.com/${url}`;
+        break;
+      case "linkedin":
+        link = `${url}`;
+        break;
+      case "twitter":
+        link = `https://www.twitter.com/${url}`;
+        break;
+      case "pinterest":
+        link = `https://www.pinterest.com/${url}`;
+        break;
+      case "youtube":
+        link = `${url}`;
+        break;
+      case "whatsapp":
+        link = `https://wa.me/${url}`;
+        break;
+      default:
+        link = `https://www.google.com/search?q=${url}`;
+    }
+    Linking.openURL(link);
   };
-
+  function getNumber(inputString) {
+    if (inputString) {
+      let hash = 0;
+      let options = ["avataaars", "micah", "bottts", "gridy", "human"];
+      for (let i = 0; i < inputString.length; i++) {
+        hash = inputString.charCodeAt(i) + ((hash << 4) - hash);
+      }
+      const number = Math.abs(hash % 4);
+      let res = options[number];
+      return res;
+    } else if (!inputString) {
+      return "micah";
+    }
+  }
+  const handleDelete = (id) => {
+    let res = axios.post("https://fnfservice.onrender.com/user/deletepost", {
+      id: id,
+    });
+    getUserpost();
+    ToastAndroid.show("DELETED THE IMAGE", ToastAndroid.SHORT);
+  };
   return (
     <SafeAreaView>
       <ScrollView style={styles.blackBG}>
@@ -78,24 +127,27 @@ const ProfileUserScreen = ({ route, navigation }) => {
             <Ionicons name="chevron-back" size={24} />
           </Pressable>
           <View>
-            <Pressable style={styles.padding2}>
-              <AntDesign name="plussquareo" size={24} />
-            </Pressable>
+            <ImagePic
+              content={"userPost"}
+              username={userdetail?.username}
+              getUserpost={getUserpost}
+            />
           </View>
         </View>
 
+        {userdetail?.dp ? (
+          <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
+        ) : (
+          <SvgUri
+            uri={`https://avatars.dicebear.com/api/${getNumber(
+              userdetail?.username
+            )}/${userdetail?.username}.svg`}
+            width={60}
+            height={60}
+            style={styles.dpimage}
+          />
+        )}
         <View style={styles.dpview}>
-
-          {userdetail?.dp ? (
-            <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
-          ) : (
-            <SvgUri
-              uri={`https://avatars.dicebear.com/api/micah/${userdetail?.username}.svg`}
-              width={60}
-              height={60}
-              style={styles.dpimage}
-            />
-          )}
           <Text>{userdetail?.username}</Text>
           <Pressable style={styles.dpview} onPress={detailExpand}>
             <MaterialCommunityIcons
@@ -138,56 +190,87 @@ const ProfileUserScreen = ({ route, navigation }) => {
           userdetail?.whatsapp) && (
           <View style={styles.socialview}>
             {userdetail?.instagram && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.instagram, "instagram")}
+              >
                 <AntDesign name="instagram" size={34} />
               </Pressable>
             )}
             {userdetail?.snapchat && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.snapchat, "snapchat")}
+              >
                 <FontAwesome5 name="snapchat-square" size={34} />
               </Pressable>
             )}
             {userdetail?.facebook && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.facebook, "facebook")}
+              >
                 <AntDesign name="facebook-square" size={34} />
               </Pressable>
             )}
             {userdetail?.linkedin && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.linkedin, "linkedin")}
+              >
                 <AntDesign name="linkedin-square" size={34} />
               </Pressable>
             )}
             {userdetail?.twitter && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.twitter, "twitter")}
+              >
                 <FontAwesome5 name="twitter-square" size={34} />
               </Pressable>
             )}
             {userdetail?.pinterest && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.pinterest, "pinterest")}
+              >
                 <FontAwesome5 name="pinterest-square" size={34} />
               </Pressable>
             )}
-            {console.log(userdetail, "ud")}
             {userdetail?.youtube && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.youtube, "youtube")}
+              >
                 <FontAwesome5 name="youtube" size={34} />
               </Pressable>
             )}
             {userdetail?.whatsapp && (
-              <Pressable style={styles.socialicon}>
+              <Pressable
+                style={styles.socialicon}
+                onPress={() => handleLink(userdetail?.whatsapp, "whatsapp")}
+              >
                 <FontAwesome5 name="whatsapp-square" size={34} />
               </Pressable>
             )}
           </View>
         )}
         {userpost?.length !== 0 && (
-          <View style={styles.socialview}>
-            {userpost?.map((post) => {
+          <View style={styles.postflex}>
+            {userpost?.map((post, id) => {
               return (
-                <Image
-                  source={{ uri: post?.posturl }}
-                  style={styles.postimage}
-                />
+                <View key={`postkey-${id}`} style={styles.postpressable}>
+                  <Image
+                    style={styles.homepost}
+                    source={{ uri: post?.post }}
+                    // style={styles.postimage}
+                  />
+                  <Pressable onPress={() => handleDelete(post?._id)} style={styles.deleteButton}>
+                    <Text >
+                      <MaterialIcons name="delete" size={24} color="black" />
+                    </Text>
+                  </Pressable>
+                </View>
               );
             })}
           </View>
