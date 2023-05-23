@@ -13,7 +13,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg";
 
 import styles from "./css";
 import { MyContext } from "./MyContext";
@@ -168,14 +168,14 @@ const HomeScreen = ({ navigation }) => {
                         })
                       }
                     >
-                      <SvgUri
+                      {/* <SvgUri
                         uri={`https://avatars.dicebear.com/api/${getNumber(
                           data.username
                         )}/${data.username}.svg`}
                         width={50}
                         height={50}
                         style={styles.dpimage}
-                      />
+                      /> */}
                       <Text style={styles.nametext}>{data.username}</Text>
                     </Pressable>
                   </View>
@@ -210,14 +210,15 @@ const HomeScreen = ({ navigation }) => {
                         source={{ uri: data.dp }}
                       />
                     ) : (
-                    <SvgUri
-                      uri={`https://avatars.dicebear.com/api/${getNumber(
-                        data
-                      )}/${data}.svg`}
-                      width={50}
-                      height={50}
-                      style={styles.dpimage}
-                    />
+                    // <SvgUri
+                    //   uri={`https://avatars.dicebear.com/api/${getNumber(
+                    //     data
+                    //   )}/${data}.svg`}
+                    //   width={50}
+                    //   height={50}
+                    //   style={styles.dpimage}
+                    // />
+                    null
                     )}
                     <Text style={styles.nametext}>{data}</Text>
                   </Pressable>

@@ -36,7 +36,7 @@ export default function Nav() {
           />
           <Stack.Screen
             name="Messages"
-            // options={{ headerShown: false }}
+            // options={{ headerShown: false }}s
             component={MessageView}
           />
         

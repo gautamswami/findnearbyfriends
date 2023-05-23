@@ -20,7 +20,7 @@ import styles, { BioText, HomeText } from "./css";
 import React, { useState, useEffect } from "react";
 import ImagePic from "./imagepicker";
 import axios from "axios";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FriendModal from "./friendModal";
 import DetailModal from "./detailModal";
@@ -138,14 +138,15 @@ const ProfileUserScreen = ({ route, navigation }) => {
         {userdetail?.dp ? (
           <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
         ) : (
-          <SvgUri
-            uri={`https://avatars.dicebear.com/api/${getNumber(
-              userdetail?.username
-            )}/${userdetail?.username}.svg`}
-            width={60}
-            height={60}
-            style={styles.dpimage}
-          />
+          // <SvgUri
+          //   uri={`https://avatars.dicebear.com/api/${getNumber(
+          //     userdetail?.username
+          //   )}/${userdetail?.username}.svg`}
+          //   width={60}
+          //   height={60}
+          //   style={styles.dpimage}
+          // />
+          null
         )}
         <View style={styles.dpview}>
           <Text>{userdetail?.username}</Text>
