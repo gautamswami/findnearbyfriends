@@ -226,14 +226,14 @@ const styles = StyleSheet.create({
     height: 180,
     overflow: "hidden",
   },
-  deleteButton:{
-    position:'absolute',
-    top:0,
-    right:0,
-  padding:4,
-  backgroundColor:'#afafaf63',
-  margin:2,
-  borderRadius:5
+  deleteButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    padding: 4,
+    backgroundColor: "#afafaf63",
+    margin: 2,
+    borderRadius: 5,
   },
   postpressable: {
     backgroundColor: "white",
@@ -347,6 +347,68 @@ const styles = StyleSheet.create({
     marginTop: 50,
     marginBottom: 40,
   },
+  receiverMessageView: {
+    
+    padding: 10,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    borderBottomRightRadius:10,
+    borderTopRightRadius:10,
+    borderBottomLeftRadius:20,
+    borderTopLeftRadius:10,
+    margin:10,
+    marginRight:40,
+    marginLeft:5,
+  },
+  senderMessageView: {
+    
+    padding: 10,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row-reverse",
+   
+    margin:10,
+    marginRight:40,
+    marginLeft:5,
+  },
+  messageImage: {
+    width: 60,
+    height: 60,
+    padding: 1,
+    backgroundColor: "gray",
+    borderRadius:10
+  },
+  messageIncomingstyle:{
+    padding:8,
+    backgroundColor: "rgba(164,164,164,1)",
+    borderBottomRightRadius:10,
+    borderTopRightRadius:10,
+    borderBottomLeftRadius:10,
+    borderTopLeftRadius:1,
+  },
+  messageTextstyle: {
+    padding:8,
+    backgroundColor: "#d8d8d8", 
+    borderBottomRightRadius:10,
+    borderTopRightRadius:1,
+    borderBottomLeftRadius:10,
+    borderTopLeftRadius:10,
+  },
+  messageHeaderImage:{
+    margin:5,
+    borderWidth:1,
+    borderRadius:10,
+    borderColor:'black'
+  },
+  messageHeader:{
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'flex-end',
+    padding :1,
+    borderBottomColor:'black',
+    borderBottomWidth:1
+  }
 });
 export const HomeText = ({ text }) => {
   return <Text style={styles.blacksmalltext}>{text}</Text>;

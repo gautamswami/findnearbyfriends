@@ -10,6 +10,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Profile from "./screens/profile";
 import HomeComponent from "./screens/home";
 import Setting from "./screens/setting";
+import Anonymous from "./screens/anonymous/anonymous";
 import Nav from "./screens/tabNav";
 import MessageNav from "./screens/messagenav";
 const Tab = createBottomTabNavigator();
@@ -38,7 +39,7 @@ const TabNav = ({ navigation }) => {
 
                 }
                 else if(route.name === 'Anonymous'){
-                  iconName = focused ? 'setting' : 'setting'
+                  iconName = focused ? 'anonymous' : 'anonymous'
                 return  <MaterialCommunityIcons name="guy-fawkes-mask" size={24} color="white" />
 
                 }
@@ -76,7 +77,7 @@ const TabNav = ({ navigation }) => {
           />
           <Tab.Screen
             name="Anonymous"
-            component={Setting}
+            component={Anonymous}
             options={{ headerShown: false, tabBarVisible:false  }}
           />
         </Tab.Navigator>

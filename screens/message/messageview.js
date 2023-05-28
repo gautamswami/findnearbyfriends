@@ -13,7 +13,7 @@ import { io } from "socket.io-client";
 import { EvilIcons, Ionicons } from "@expo/vector-icons";
 
 import styles from "../css";
-// import { SvgUri } from "react-native-svg";
+import { SvgUri } from "react-native-svg";
 export default function MessageView({ route }) {
   // cliked person is user
   let { user, yourdetail } = route.params;
@@ -42,7 +42,6 @@ export default function MessageView({ route }) {
     socket.current.on("getUsers", (users) => {});
   }, [user]);
   const getConverstaion = async () => {
-    
     let convo = await axios
       .post("https://fnfservice.onrender.com/user/twouserconversation", {
         firstUserId: user,
@@ -118,55 +117,50 @@ export default function MessageView({ route }) {
       <View style={styles.blackview}>
         {convoId ? (
           <ScrollView>
-            {/* <SvgUri
-            uri={`https://avatars.dicebear.com/api/${getNumber(
-              user
-            )}/${user}.svg`}
-            width={60}
-            height={60}
-            style={styles.dpimage}
-          /> */}
+            <View style={styles.messageHeader}>
+            <SvgUri
+              uri={`https://avatars.dicebear.com/api/${getNumber(
+                user
+              )}/${user}.svg`}
+              width={60}
+              height={60}
+              style={styles.messageHeaderImage}
+            />
             <Text style={styles.blacksmalltext}>{user}</Text>
-
+            </View>
             {messages?.map((message, id) => {
               return (
                 <View key={`message-${id}`}>
-                  {/* <SvgUri
-            uri={`https://avatars.dicebear.com/api/${getNumber(
-              user
-            )}/${user}.svg`}
-            width={60}
-            height={60}
-            style={styles.dpimage}
-          /> */}
+                 
                   {message?.sender === user ? (
-                    <View>
-                      <Image
-                        source={{
-                          uri: `https://avatars.dicebear.com/api/${getNumber(
-                            user
-                          )}/${user}.svg`,
-                        }}
-                        style={styles.profileicon}
-                      />
-                      <Text style={styles.blacksmalltext}>{message?.text}</Text>
+                    <View style={styles.receiverMessageView}>
+                      {/* <SvgUri
+                        uri={`https://avatars.dicebear.com/api/${getNumber(
+                          user
+                        )}/${user}.svg`}
+                     
+                        style={styles.messageImage}
+                      /> */}
+
+                      <Text style={styles.messageIncomingstyle}>{message?.text}</Text>
                     </View>
                   ) : (
-                    <View>
-                      <Image
-                        source={{
-                          uri: `https://avatars.dicebear.com/api/${getNumber(
-                            message?.sender
-                          )}/${message?.sender}.svg`,
-                        }}
-                        style={styles.profileicon}
-                      />
-                      <Text style={{ color: "red" }}>{message?.text}</Text>
+                    <View style={styles.senderMessageView}>
+                      {/* <SvgUri
+                        uri={`https://avatars.dicebear.com/api/${getNumber(
+                          message?.sender
+                        )}/${message?.sender}.svg`}
+                    
+                        style={styles.messageImage}
+                      /> */}
+
+                      <Text style={styles.messageTextstyle}>{message?.text}</Text>
                     </View>
                   )}
                 </View>
               );
             })}
+            <View style={styles.flexcenter}>
             <TextInput
               onChangeText={(messagetext) => setMessagetext(messagetext)}
               style={styles.logininput}
@@ -176,17 +170,18 @@ export default function MessageView({ route }) {
             <Pressable onPress={handleConvo}>
               <Text style={styles.blacksmalltext}>SEND</Text>
             </Pressable>
+            </View>
           </ScrollView>
         ) : (
-          <View>
-            {/* <SvgUri
-            uri={`https://avatars.dicebear.com/api/${getNumber(
-              user
-            )}/${user}.svg`}
-            width={60}
-            height={60}
-            style={styles.dpimage}
-          /> */}
+          <View >
+            <SvgUri
+              uri={`https://avatars.dicebear.com/api/${getNumber(
+                user
+              )}/${user}.svg`}
+              width={60}
+              height={60}
+              style={styles.dpimage}
+            />
             <Text style={styles.blacksmalltext}>
               Do you want to Start Converstaion with {user} ?
             </Text>
