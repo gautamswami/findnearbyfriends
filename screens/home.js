@@ -1,11 +1,4 @@
-import {
-  Button,
-  ScrollView,
-  Pressable,
-  Text,
-  View,
-  Image,
-} from "react-native";
+import { Button, ScrollView, Pressable, Text, View, Image } from "react-native";
 import * as Location from "expo-location";
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
@@ -57,6 +50,7 @@ const HomeScreen = ({ navigation }) => {
     if (detail?.data[0]) {
       setUserdetail(detail?.data[0]);
       getlocation(location, user);
+      await AsyncStorage.setItem("yourdetail", JSON.stringify(detail?.data[0]));
     } else if (!detail?.data[0]) {
       await AsyncStorage.clear();
       setScreenVisible("login");
@@ -209,8 +203,7 @@ const HomeScreen = ({ navigation }) => {
                         style={styles.profileicon}
                         source={{ uri: data.dp }}
                       />
-                    ) : (
-                    // <SvgUri
+                    ) : // <SvgUri
                     //   uri={`https://avatars.dicebear.com/api/${getNumber(
                     //     data
                     //   )}/${data}.svg`}
@@ -218,8 +211,7 @@ const HomeScreen = ({ navigation }) => {
                     //   height={50}
                     //   style={styles.dpimage}
                     // />
-                    null
-                    )}
+                    null}
                     <Text style={styles.nametext}>{data}</Text>
                   </Pressable>
                 </View>

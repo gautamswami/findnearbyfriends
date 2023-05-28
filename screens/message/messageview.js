@@ -6,12 +6,14 @@ import {
   TextInput,
   View,
   SafeAreaView,
+  Image,
 } from "react-native";
 import axios from "axios";
-import styles from "../css";
-import { EvilIcons, Ionicons } from "@expo/vector-icons";
-// import { SvgUri } from "react-native-svg";
 import { io } from "socket.io-client";
+import { EvilIcons, Ionicons } from "@expo/vector-icons";
+
+import styles from "../css";
+// import { SvgUri } from "react-native-svg";
 export default function MessageView({ route }) {
   // cliked person is user
   let { user, yourdetail } = route.params;
@@ -24,7 +26,7 @@ export default function MessageView({ route }) {
     getConverstaion();
   }, []);
   useEffect(() => {
-    socket.current = io("ws://192.168.137.1:8900");
+    socket.current = io("ws://54.86.57.146:8900");
     socket.current.on("getMessage", (data) => {
       setArrival({
         sender: data.senderId,
@@ -40,17 +42,18 @@ export default function MessageView({ route }) {
     socket.current.on("getUsers", (users) => {});
   }, [user]);
   const getConverstaion = async () => {
-    let convo = await axios.post(
-      "https://fnfservice.onrender.com/user/twouserconversation",
-      {
+    
+    let convo = await axios
+      .post("https://fnfservice.onrender.com/user/twouserconversation", {
         firstUserId: user,
         secondUserId: yourdetail?.username,
-      }
-    );
-    if (convo?.data?._id) {
-      setConvoId(convo?.data?._id);
-      // getMessages();
-    }
+      })
+      .then((response) => {
+        if (response?.data?._id) {
+          setConvoId(response?.data?._id);
+          getMessages(response?.data?._id);
+        }
+      });
   };
   const handleConvo = async () => {
     if (convoId && messagetext) {
@@ -59,13 +62,19 @@ export default function MessageView({ route }) {
         receiverId: user,
         text: messagetext,
       });
-      await axios.post("https://fnfservice.onrender.com/user/sendmessage", {
-        conversationId: convoId,
-        sender: yourdetail?.username,
-        text: messagetext,
-      });
+      let sentmessage = await axios.post(
+        "https://fnfservice.onrender.com/user/sendmessage",
+        {
+          conversationId: convoId,
+          sender: yourdetail?.username,
+          text: messagetext,
+        }
+      );
+      if (sentmessage) {
+        setMessages([...messages, sentmessage?.data]);
+      }
     } else {
-      let newconvo = axios.post(
+      let newconvo = await axios.post(
         "https://fnfservice.onrender.com/user/newconversation",
         {
           senderId: yourdetail?.username,
@@ -75,33 +84,41 @@ export default function MessageView({ route }) {
       if (newconvo?.data?._id) {
         setConvoId(newconvo?.data?._id);
       }
+      getMessages(newconvo?.data?._id);
     }
-    // getMessages();
+    setMessagetext("");
   };
-  // const getMessages = async () => {
-  //   const mess = await axios.post(
-  //     "https://fnfservice.onrender.com/user/getmessage",
-  //     {
-  //       conversationId: convoId,
-  //     }
-  //   );
-  //   setMessages(mess.data);
-  // };
-  function getNumber(inputString) {
-    let hash = 0;
-    let options = ["avataaars", "micah", "bottts", "gridy", "human"];
-    for (let i = 0; i < inputString.length; i++) {
-      hash = inputString.charCodeAt(i) + ((hash << 4) - hash);
+  const getMessages = async (chatid) => {
+    const mess = await axios.post(
+      "https://fnfservice.onrender.com/user/getmessage",
+      {
+        conversationId: chatid,
+      }
+    );
+    if (mess) {
+      setMessages(mess.data);
     }
-    const number = Math.abs(hash % 4);
-    let res = options[number];
-    return res;
+  };
+  function getNumber(inputString) {
+    if (inputString && inputString?.trim()?.length !== 0) {
+      let hash = 0;
+      let options = ["avataaars", "micah", "bottts", "gridy", "human"];
+      for (let i = 0; i < inputString.length; i++) {
+        hash = inputString.charCodeAt(i) + ((hash << 4) - hash);
+      }
+      const number = Math.abs(hash % 4);
+      let res = options[number];
+      return res;
+    } else {
+      return "avataaars";
+    }
   }
   return (
     <>
       <View style={styles.blackview}>
-        <ScrollView>
-          {/* <SvgUri
+        {convoId ? (
+          <ScrollView>
+            {/* <SvgUri
             uri={`https://avatars.dicebear.com/api/${getNumber(
               user
             )}/${user}.svg`}
@@ -109,32 +126,75 @@ export default function MessageView({ route }) {
             height={60}
             style={styles.dpimage}
           /> */}
-          <Text style={styles.blacksmalltext}>{user}</Text>
+            <Text style={styles.blacksmalltext}>{user}</Text>
 
-          {messages?.map((message, id) => {
-            return (
-              <View key={`message-${id}`}>
-                <EvilIcons name="user" size={74} color="white" />
-
-                <Text style={styles.blacksmalltext}>{message?.text}</Text>
-              </View>
-            );
-          })}
-          <TextInput
-            onChangeText={(messagetext) => setMessagetext(messagetext)}
-            style={styles.logininput}
-            placeholder="send message"
-          />
-          {convoId ? (
+            {messages?.map((message, id) => {
+              return (
+                <View key={`message-${id}`}>
+                  {/* <SvgUri
+            uri={`https://avatars.dicebear.com/api/${getNumber(
+              user
+            )}/${user}.svg`}
+            width={60}
+            height={60}
+            style={styles.dpimage}
+          /> */}
+                  {message?.sender === user ? (
+                    <View>
+                      <Image
+                        source={{
+                          uri: `https://avatars.dicebear.com/api/${getNumber(
+                            user
+                          )}/${user}.svg`,
+                        }}
+                        style={styles.profileicon}
+                      />
+                      <Text style={styles.blacksmalltext}>{message?.text}</Text>
+                    </View>
+                  ) : (
+                    <View>
+                      <Image
+                        source={{
+                          uri: `https://avatars.dicebear.com/api/${getNumber(
+                            message?.sender
+                          )}/${message?.sender}.svg`,
+                        }}
+                        style={styles.profileicon}
+                      />
+                      <Text style={{ color: "red" }}>{message?.text}</Text>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+            <TextInput
+              onChangeText={(messagetext) => setMessagetext(messagetext)}
+              style={styles.logininput}
+              value={messagetext}
+              placeholder="send message"
+            />
             <Pressable onPress={handleConvo}>
               <Text style={styles.blacksmalltext}>SEND</Text>
             </Pressable>
-          ) : (
+          </ScrollView>
+        ) : (
+          <View>
+            {/* <SvgUri
+            uri={`https://avatars.dicebear.com/api/${getNumber(
+              user
+            )}/${user}.svg`}
+            width={60}
+            height={60}
+            style={styles.dpimage}
+          /> */}
+            <Text style={styles.blacksmalltext}>
+              Do you want to Start Converstaion with {user} ?
+            </Text>
             <Pressable onPress={handleConvo}>
               <Text style={styles.blacksmalltext}>START CONVO</Text>
             </Pressable>
-          )}
-        </ScrollView>
+          </View>
+        )}
       </View>
     </>
   );
