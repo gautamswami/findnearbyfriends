@@ -120,14 +120,14 @@ const ProfileUserScreen = ({ route, navigation }) => {
           >
             <Ionicons name="chevron-back" size={24} />
           </Pressable>
-          <SvgUri
+          {/* <SvgUri
             uri={`https://avatars.dicebear.com/api/${getNumber(
               userdetail?.username
             )}/${userdetail?.username}.svg`}
             width={60}
             height={60}
             style={styles.dpimage}
-          />
+          /> */}
           <View style={styles.dpview}>
             <Text>{userdetail?.username} </Text>
             {followsent === "incoming" ? (
@@ -272,12 +272,12 @@ const ProfileUserScreen = ({ route, navigation }) => {
             <Ionicons name="chevron-back" size={24} />
           </Pressable>
           <View style={styles.searchview}>
-            <SvgUri
+            {/* <SvgUri
               uri={`https://avatars.dicebear.com/api/avataaars/undefined.svg`}
               width={100}
               height={100}
               style={styles.dpimage}
-            />
+            /> */}
 
             <Text style={styles.unapprovedText}>UNAPPROVED USER</Text>
           </View>

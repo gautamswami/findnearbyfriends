@@ -42,13 +42,29 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   logininput: {
-    borderWidth: 2,
-    borderRadius: 10,
-    width: 312,
-    padding: "4%",
+    borderWidth: 1,
+    borderRadius: 5,
+    width: "70%",
+    padding: "2%",
+    margin: 10,
     outlineStyle: "none",
-    marginBottom: 20,
+   marginBottom:0,
     marginTop: 10,
+    marginRight:2
+  },
+  messageSendBtn: {
+    backgroundColor:'black',
+    padding:"2%",
+    height:'70%',
+    width:90,
+    borderRadius:10
+  },
+  messageSendText: {
+    fontStyle: "normal",
+    fontWeight: "600",
+    fontSize: 12,
+    textAlign: "center",
+    color:'white'
   },
   loginbuttonstyle: {
     backgroundColor: "#4d4fa9",
@@ -348,67 +364,65 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   receiverMessageView: {
-    
     padding: 10,
     display: "flex",
     alignItems: "center",
     flexDirection: "row",
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,
-    borderBottomLeftRadius:20,
-    borderTopLeftRadius:10,
-    margin:10,
-    marginRight:40,
-    marginLeft:5,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 10,
+    margin: 10,
+    marginRight: 40,
+    marginLeft: 5,
   },
   senderMessageView: {
-    
     padding: 10,
     display: "flex",
     alignItems: "center",
     flexDirection: "row-reverse",
-   
-    margin:10,
-    marginRight:40,
-    marginLeft:5,
+
+    margin: 10,
+    marginRight: 40,
+    marginLeft: 5,
   },
   messageImage: {
     width: 60,
     height: 60,
     padding: 1,
     backgroundColor: "gray",
-    borderRadius:10
+    borderRadius: 10,
   },
-  messageIncomingstyle:{
-    padding:8,
+  messageIncomingstyle: {
+    padding: 8,
     backgroundColor: "rgba(164,164,164,1)",
-    borderBottomRightRadius:10,
-    borderTopRightRadius:10,
-    borderBottomLeftRadius:10,
-    borderTopLeftRadius:1,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 1,
   },
   messageTextstyle: {
-    padding:8,
-    backgroundColor: "#d8d8d8", 
-    borderBottomRightRadius:10,
-    borderTopRightRadius:1,
-    borderBottomLeftRadius:10,
-    borderTopLeftRadius:10,
+    padding: 8,
+    backgroundColor: "#d8d8d8",
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 1,
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
   },
-  messageHeaderImage:{
-    margin:5,
-    borderWidth:1,
-    borderRadius:10,
-    borderColor:'black'
+  messageHeaderImage: {
+    margin: 5,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "black",
   },
-  messageHeader:{
-    display:'flex',
-    flexDirection:'row',
-    alignItems:'flex-end',
-    padding :1,
-    borderBottomColor:'black',
-    borderBottomWidth:1
-  }
+  messageHeader: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    padding: 1,
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+  },
 });
 export const HomeText = ({ text }) => {
   return <Text style={styles.blacksmalltext}>{text}</Text>;

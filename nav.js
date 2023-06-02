@@ -13,6 +13,7 @@ import Setting from "./screens/setting";
 import Anonymous from "./screens/anonymous/anonymous";
 import Nav from "./screens/tabNav";
 import MessageNav from "./screens/messagenav";
+import RoomNav from "./screens/anonymous/anonymousnav";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -77,7 +78,7 @@ const TabNav = ({ navigation }) => {
           />
           <Tab.Screen
             name="Anonymous"
-            component={Anonymous}
+            component={RoomNav}
             options={{ headerShown: false, tabBarVisible:false  }}
           />
         </Tab.Navigator>

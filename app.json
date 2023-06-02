@@ -5,7 +5,12 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "73d3ecd7-3092-47f3-8947-e07e622e314a"
+      }
+    }
   },
   "name": "fnf"
 }

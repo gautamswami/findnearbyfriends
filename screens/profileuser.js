@@ -138,14 +138,15 @@ const ProfileUserScreen = ({ route, navigation }) => {
         {userdetail?.dp ? (
           <Image style={styles.dpimage} source={{ uri: userdetail?.dp }} />
         ) : (
-          <SvgUri
-            uri={`https://avatars.dicebear.com/api/${getNumber(
-              userdetail?.username
-            )}/${userdetail?.username}.svg`}
-            width={60}
-            height={60}
-            style={styles.dpimage}
-          />
+          // <SvgUri
+          //   uri={`https://avatars.dicebear.com/api/${getNumber(
+          //     userdetail?.username
+          //   )}/${userdetail?.username}.svg`}
+          //   width={60}
+          //   height={60}
+          //   style={styles.dpimage}
+          // />
+          null
         )}
         <View style={styles.dpview}>
           <Text>{userdetail?.username}</Text>

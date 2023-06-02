@@ -6,7 +6,7 @@ import ProfileScreen from "./profile";
 import ProfileUserScreen from "./profileuser";
 import Message from "./message/message";
 import MessageView from "./message/messageview";
-
+// import
 const Stack = createNativeStackNavigator();
 
 export default function Nav() {

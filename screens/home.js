@@ -6,18 +6,28 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
-import { SvgUri } from "react-native-svg";
+// import { SvgUri } from "react-native-svg";
 
 import styles from "./css";
 import { MyContext } from "./MyContext";
 
 const HomeScreen = ({ navigation }) => {
   const { screenVisible, setScreenVisible } = useContext(MyContext);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    coords: {
+      accuracy: 13.12399959564209,
+      altitude: 225.29998779296875,
+      altitudeAccuracy: 1.6242989301681519,
+      heading: 0,
+      latitude: 28.4389363,
+      longitude: 77.0981481,
+      speed: 0,
+    },
+  });
   const [longitude, setLongitude] = useState();
   const [userfriends, setUserfriends] = useState([]);
   const [friendspost, setFriendspost] = useState([]);
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useState("Gurugram");
   const [cityusers, setCityusers] = useState([]);
   const [userdetail, setUserdetail] = useState([]);
   const [yourname, setYourname] = useState();
@@ -31,6 +41,7 @@ const HomeScreen = ({ navigation }) => {
   const getcordinates = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
+      getUser(location);
       setErrorMsg("Permission to access location was denied");
       return;
     }
@@ -60,7 +71,9 @@ const HomeScreen = ({ navigation }) => {
     let res = await fetch(
       `http://api.openweathermap.org/geo/1.0/reverse?lat=${data.coords.latitude}&lon=${data.coords.longitude}&limit=5&appid=641a5559c22d56fbfc9ca69c1c7d7876`
     ).then((res) => res.json());
+    let youlocation = res[0].name;
 
+    await AsyncStorage.setItem("youlocation", youlocation);
     setAddress(res[0].name);
     try {
       const loc = await axios.post(
@@ -162,14 +175,14 @@ const HomeScreen = ({ navigation }) => {
                         })
                       }
                     >
-                      <SvgUri
+                      {/* <SvgUri
                         uri={`https://avatars.dicebear.com/api/${getNumber(
                           data.username
                         )}/${data.username}.svg`}
                         width={50}
                         height={50}
                         style={styles.dpimage}
-                      />
+                      /> */}
                       <Text style={styles.nametext}>{data.username}</Text>
                     </Pressable>
                   </View>
@@ -203,16 +216,15 @@ const HomeScreen = ({ navigation }) => {
                         style={styles.profileicon}
                         source={{ uri: data.dp }}
                       />
-                    ) : (
-                      <SvgUri
-                        uri={`https://avatars.dicebear.com/api/${getNumber(
-                          data
-                        )}/${data}.svg`}
-                        width={50}
-                        height={50}
-                        style={styles.dpimage}
-                      />
-                    )}
+                    ) : // <SvgUri
+                    //   uri={`https://avatars.dicebear.com/api/${getNumber(
+                    //     data
+                    //   )}/${data}.svg`}
+                    //   width={50}
+                    //   height={50}
+                    //   style={styles.dpimage}
+                    // />
+                    null}
                     <Text style={styles.nametext}>{data}</Text>
                   </Pressable>
                 </View>

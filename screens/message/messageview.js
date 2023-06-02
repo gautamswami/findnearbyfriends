@@ -7,6 +7,7 @@ import {
   View,
   SafeAreaView,
   Image,
+  Keyboard
 } from "react-native";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -24,6 +25,7 @@ export default function MessageView({ route }) {
   const socket = useRef();
   useEffect(() => {
     getConverstaion();
+    scrollToBottom();
   }, []);
   useEffect(() => {
     socket.current = io("ws://54.86.57.146:8900");
@@ -33,9 +35,11 @@ export default function MessageView({ route }) {
         text: data.text,
       });
     });
+    scrollToBottom()
   }, []);
   useEffect(() => {
     setMessages([...messages, arrival]);
+    scrollToBottom()
   }, [arrival]);
   useEffect(() => {
     socket.current.emit("addUser", yourdetail?.username);
@@ -53,8 +57,11 @@ export default function MessageView({ route }) {
           getMessages(response?.data?._id);
         }
       });
+      scrollToBottom()
   };
   const handleConvo = async () => {
+    console.log("clicked");
+    Keyboard.dismiss()
     if (convoId && messagetext) {
       socket.current.emit("sendMessage", {
         senderId: yourdetail?.username,
@@ -72,20 +79,22 @@ export default function MessageView({ route }) {
       if (sentmessage) {
         setMessages([...messages, sentmessage?.data]);
       }
-    } else {
-      let newconvo = await axios.post(
-        "https://fnfservice.onrender.com/user/newconversation",
-        {
-          senderId: yourdetail?.username,
-          receiverId: user,
-        }
-      );
-      if (newconvo?.data?._id) {
-        setConvoId(newconvo?.data?._id);
-      }
-      getMessages(newconvo?.data?._id);
     }
     setMessagetext("");
+    scrollToBottom()
+  };
+  const hadleConvoStart = async () => {
+    let newconvo = await axios.post(
+      "https://fnfservice.onrender.com/user/newconversation",
+      {
+        senderId: yourdetail?.username,
+        receiverId: user,
+      }
+    );
+    if (newconvo?.data?._id) {
+      setConvoId(newconvo?.data?._id);
+    }
+    getMessages(newconvo?.data?._id);
   };
   const getMessages = async (chatid) => {
     const mess = await axios.post(
@@ -97,6 +106,7 @@ export default function MessageView({ route }) {
     if (mess) {
       setMessages(mess.data);
     }
+    scrollToBottom()
   };
   function getNumber(inputString) {
     if (inputString && inputString?.trim()?.length !== 0) {
@@ -112,26 +122,31 @@ export default function MessageView({ route }) {
       return "avataaars";
     }
   }
+  const scrollViewRef = useRef();
+
+  const scrollToBottom = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true });
+  };
   return (
     <>
       <View style={styles.blackview}>
         {convoId ? (
-          <ScrollView>
+          <ScrollView ref={scrollViewRef}>
             <View style={styles.messageHeader}>
-            <SvgUri
-              uri={`https://avatars.dicebear.com/api/${getNumber(
-                user
-              )}/${user}.svg`}
-              width={60}
-              height={60}
-              style={styles.messageHeaderImage}
-            />
-            <Text style={styles.blacksmalltext}>{user}</Text>
+              {/* to uncoment */}
+              {/* <SvgUri
+                uri={`https://avatars.dicebear.com/api/${getNumber(
+                  user
+                )}/${user}.svg`}
+                width={60}
+                height={60}
+                style={styles.messageHeaderImage}
+              /> */}
+              <Text style={styles.blacksmalltext}>{user}</Text>
             </View>
             {messages?.map((message, id) => {
               return (
                 <View key={`message-${id}`}>
-                 
                   {message?.sender === user ? (
                     <View style={styles.receiverMessageView}>
                       {/* <SvgUri
@@ -142,7 +157,9 @@ export default function MessageView({ route }) {
                         style={styles.messageImage}
                       /> */}
 
-                      <Text style={styles.messageIncomingstyle}>{message?.text}</Text>
+                      <Text style={styles.messageIncomingstyle}>
+                        {message?.text}
+                      </Text>
                     </View>
                   ) : (
                     <View style={styles.senderMessageView}>
@@ -154,41 +171,50 @@ export default function MessageView({ route }) {
                         style={styles.messageImage}
                       /> */}
 
-                      <Text style={styles.messageTextstyle}>{message?.text}</Text>
+                      <Text style={styles.messageTextstyle}>
+                        {message?.text}
+                      </Text>
                     </View>
                   )}
                 </View>
               );
             })}
-            <View style={styles.flexcenter}>
-            <TextInput
-              onChangeText={(messagetext) => setMessagetext(messagetext)}
-              style={styles.logininput}
-              value={messagetext}
-              placeholder="send message"
-            />
-            <Pressable onPress={handleConvo}>
-              <Text style={styles.blacksmalltext}>SEND</Text>
-            </Pressable>
+            <View
+              style={[
+                styles.flexcenter,
+                { marginBottom: 40, alignItems: "flex-end" },
+              ]}
+            >
+              <TextInput
+                onChangeText={(messagetext) => setMessagetext(messagetext)}
+                style={styles.logininput}
+                value={messagetext}
+                placeholder="send message"
+              />
+              
+              <Pressable onPress={handleConvo} style={styles.messageSendBtn}>
+                <Text style={styles.messageSendText}>SEND</Text>
+              </Pressable>
             </View>
           </ScrollView>
         ) : (
-          <View >
-            <SvgUri
+          <ScrollView  ref={scrollViewRef}>
+            {/* to uncoment */}
+            {/* <SvgUri
               uri={`https://avatars.dicebear.com/api/${getNumber(
                 user
               )}/${user}.svg`}
               width={60}
               height={60}
               style={styles.dpimage}
-            />
+            /> */}
             <Text style={styles.blacksmalltext}>
               Do you want to Start Converstaion with {user} ?
             </Text>
-            <Pressable onPress={handleConvo}>
+            <Pressable onPress={hadleConvoStart}>
               <Text style={styles.blacksmalltext}>START CONVO</Text>
             </Pressable>
-          </View>
+          </ScrollView>
         )}
       </View>
     </>

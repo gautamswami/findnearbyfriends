@@ -95,14 +95,14 @@ export default function Message({ route, navigation }) {
                       })
                     }
                   >
-                    <SvgUri
+                    {/* <SvgUri
                   uri={`https://avatars.dicebear.com/api/${getNumber(
                     getUser(data?.members)
                   )}/${getUser(data?.members)}.svg`}
                   width={60}
                   height={60}
                   style={styles.dpimage}
-                />
+                /> */}
                   </Pressable>
                   <Pressable>
                     <Text style={styles.blacksmalltext}>
